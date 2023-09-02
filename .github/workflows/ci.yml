@@ -6,8 +6,7 @@ on:
     tags:
       - v*
   schedule:
-    # 每天 5:30 和 17:30 UTC 触发工作流程
-    - cron:  '30 5,17 * * *'
+    - cron:  '0 0 * * 0'
 
 jobs:
   build-deploy:
@@ -38,22 +37,9 @@ jobs:
       - run: cat .cache/users.vietnam.json
       - run: npm run get:users:info
 
-      - name: Modify README.md
-        uses: jaywcjlove/github-action-modify-file-content@main
-        with:
-          path: README.md
-          body: "{{date:YYYY-MM-DD HH:mm:ss}}"
-
       - run: npm run start
       - run: mkdir -p web/data
       - run: cp -rf dist/* web/data
-
-      - name: Generate Contributors Images
-        uses: jaywcjlove/github-action-contributors@main
-        with:
-          filter-author: (renovate\[bot\]|renovate-bot|dependabot\[bot\])
-          output: web/CONTRIBUTORS.svg
-          avatarSize: 42
 
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
@@ -62,8 +48,3 @@ jobs:
           publish_dir: ./web
           user_name: github-actions[bot]
           user_email: github-actions[bot]@users.noreply.github.com
-
-      - run: npm publish --access public
-        continue-on-error: true
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
