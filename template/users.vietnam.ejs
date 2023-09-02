@@ -1,6 +1,6 @@
-<%- include('./_partial/header', { tabCls: 'users', type: 'china', title: 'GitHub China User Ranking' }); %>
+<%- include('./_partial/header', { tabCls: 'users', type: 'vietnam', title: 'GitHub Vietnam User Ranking' }); %>
 <div class="userlist">
-  <%- include('./_partial/users_nav', { type: 'china' }); %>
+  <%- include('./_partial/users_nav', { type: 'vietnam' }); %>
 <table>
   <thead>
     <tr>
@@ -15,7 +15,7 @@
     </tr>
   </thead>
   <tbody>
-    <% USERS_CHINA.forEach(function(user, idx) {%>
+    <% USERS_VIETNAM.forEach(function(user, idx) {%>
     <%- include('./_partial/users_list', { user, idx }); %>
     <% }); %>
   </tbody>

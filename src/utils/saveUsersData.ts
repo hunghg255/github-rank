@@ -37,7 +37,7 @@ async function getInfo(arr: UsersDataBase[], type: string = '', globalUsers: Use
       return;
     }
   }
-  
+
   findUser && users.push(findUser);
   await saveUserData([...users], type);
   // 获取成功删除第一条
@@ -76,7 +76,7 @@ function sortUser(data: UsersData[]) {
  * @param {String} type 类型，取值 `空` | 或者 `.china` 用于存储。
  * @param {UsersData[]} globalUsers 全球用户，已完成获取数据，过滤不再请求 API 了
  */
-export async function updateUsersData(usersPath: string, cachePath: string, type: '' | '.china', globalUsers?: UsersData[]) {
+export async function updateUsersData(usersPath: string, cachePath: string, type: '' | '.vietnam', globalUsers?: UsersData[]) {
   users = [];
   const usersDist: UsersData[] = await FS.readJSON(path.resolve(usersPath));
   const cacheUsers: UsersDataBase[] = await FS.readJSON(path.resolve(cachePath));
@@ -108,8 +108,8 @@ export async function updateUsersData(usersPath: string, cachePath: string, type
 
 /**
  * 数据去重
- * @param data 
- * @returns 
+ * @param data
+ * @returns
  */
 function reduce(data: UsersDataBase[] = []) {
   const obj2: Record<string, boolean> = {};

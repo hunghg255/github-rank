@@ -1,14 +1,14 @@
 {
   "name": "@wcj/github-rank",
   "version": "22.10.25",
-  "description": "Github Users Ranking for China.",
+  "description": "Github Users Ranking for Vietnam.",
   "scripts": {
     "start": "ejsc \"template/*.ejs\" -o web",
-    "get": "npm run get:users && npm run get:users:china && npm run get:users:info",
+    "get": "npm run get:users && npm run get:users:vietnam && npm run get:users:info",
     "get:o": "npm run get:trending && npm run get:repos",
     "get:users:info": "node lib/getUserInfo.js",
     "get:users": "node lib/getUsers.js",
-    "get:users:china": "node lib/getUsersChina.js",
+    "get:users:vietnam": "node lib/getUsersVietnam.js",
     "get:repos": "node lib/getRepos.js",
     "get:trending": "node lib/getTrending.js",
     "prepare": "npm run build",
@@ -22,12 +22,12 @@
   "main": "dist/users.json",
   "repository": {
     "type": "git",
-    "url": "https://github.com/jaywcjlove/github-rank.git"
+    "url": "https://github.com/hunghg255/github-rank.git"
   },
   "bugs": {
-    "url": "https://github.com/jaywcjlove/github-rank/issues"
+    "url": "https://github.com/hunghg255/github-rank/issues"
   },
-  "homepage": "http://jaywcjlove.github.io/github-rank/",
+  "homepage": "http://hunghg255.github.io/github-rank/",
   "files": [
     "dist",
     "web"

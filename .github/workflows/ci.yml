@@ -11,7 +11,7 @@ on:
 
 jobs:
   build-deploy:
-    env: 
+    env:
       ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
       ID: ${{ secrets.GITHUB_ID }}
       SECRET: ${{ secrets.GITHUB_SECRET }}
@@ -33,9 +33,9 @@ jobs:
       - run: npm run get:trending
       - run: npm run get:repos
       - run: npm run get:users
-      - run: npm run get:users:china
+      - run: npm run get:users:vietnam
       - run: cat .cache/users.json
-      - run: cat .cache/users.china.json
+      - run: cat .cache/users.vietnam.json
       - run: npm run get:users:info
 
       - name: Modify README.md

@@ -8,7 +8,7 @@ import { UsersDataBase, UsersData, RepoData } from '../common/props.js';
 
 dotenv.config();
 
-export async function getUserData(page: number, isChina?: boolean): Promise<UsersDataBase[]> {
+export async function getUserData(page: number, isVietnam?: boolean): Promise<UsersDataBase[]> {
   const headers: { authorization?: string; } = {};
   if (process.env.ACCESS_TOKEN) {
     headers.authorization = `token ${process.env.ACCESS_TOKEN}`
@@ -16,7 +16,7 @@ export async function getUserData(page: number, isChina?: boolean): Promise<User
   try {
     const dt = await request('GET /search/users', {
       ...{ headers },
-      q: `followers:>1000${isChina ? '+location:China' : ''}`,
+      q: `followers:>100+type:User${isVietnam ? '+location:Vietnam' : ''}`,
       page: page,
       per_page: 100,
     });
