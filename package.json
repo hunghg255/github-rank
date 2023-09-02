@@ -1,6 +1,6 @@
 {
   "name": "@wcj/github-rank",
-  "version": "22.10.26",
+  "version": "22.10.28",
   "description": "Github Users Ranking for Vietnam.",
   "scripts": {
     "start": "ejsc \"template/*.ejs\" -o web",
