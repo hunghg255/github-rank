@@ -1,5 +1,5 @@
 {
-  "name": "@wcj/github-rank",
+  "name": "@hunghg255/github-rank",
   "version": "22.10.28",
   "description": "Github Users Ranking for Vietnam.",
   "scripts": {
@@ -18,7 +18,7 @@
     "release": "bumpp"
   },
   "type": "module",
-  "author": "Kenny Wong <wowohoo@qq.com>",
+  "author": "hunghg255",
   "license": "MIT",
   "main": "dist/users.json",
   "repository": {
