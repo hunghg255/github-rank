@@ -1,6 +1,6 @@
 import fetch from 'node-fetch';
 import dotenv from 'dotenv';
-import cheerio from 'cheerio';
+import * as cheerio from 'cheerio';
 import url from 'url';
 import { request } from "@octokit/request";
 import formatter from '@uiw/formatter';
