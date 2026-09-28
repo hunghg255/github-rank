@@ -30,30 +30,55 @@
         try { localStorage.setItem('gr-theme', next); } catch (e) {}
       });
 
-      // Client-side filter over items carrying data-search.
+      // Client-side filter: free-text search AND the active chip of each chip group.
+      function fold(str) {
+        return String(str || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/đ/g, 'd');
+      }
       var input = document.getElementById('search');
       var items = Array.prototype.slice.call(document.querySelectorAll('[data-search]'));
       var count = document.getElementById('count');
       var empty = document.getElementById('empty');
-      function render(visible) {
+      var groups = Array.prototype.slice.call(document.querySelectorAll('[data-filter]'));
+      var active = {};
+      function flat(str) { return str.replace(/[\s.,_-]+/g, ''); }
+      items.forEach(function (el) {
+        el._text = fold(el.getAttribute('data-search'));
+        el._flat = flat(el._text);
+      });
+
+      function apply() {
+        var q = input ? fold(input.value.trim()) : '';
+        var qFlat = flat(q);
+        var visible = 0;
+        items.forEach(function (el) {
+          // "ha noi" should find "Hanoi", so also compare with separators removed.
+          var match = !q || el._text.indexOf(q) !== -1 || (qFlat && el._flat.indexOf(qFlat) !== -1);
+          for (var key in active) {
+            if (active[key] && el.getAttribute('data-' + key) !== active[key]) match = false;
+          }
+          el.hidden = !match;
+          if (match) visible++;
+        });
         if (count) count.textContent = visible === items.length
           ? items.length.toLocaleString() + ' items'
           : visible.toLocaleString() + ' of ' + items.length.toLocaleString();
         if (empty) empty.style.display = visible ? 'none' : 'block';
       }
-      if (input) {
-        input.addEventListener('input', function () {
-          var q = input.value.trim().toLowerCase();
-          var visible = 0;
-          items.forEach(function (el) {
-            var match = !q || el.getAttribute('data-search').indexOf(q) !== -1;
-            el.hidden = !match;
-            if (match) visible++;
+
+      groups.forEach(function (group) {
+        var key = group.getAttribute('data-filter');
+        group.addEventListener('click', function (e) {
+          var chip = e.target.closest('.chip');
+          if (!chip) return;
+          active[key] = chip.getAttribute('data-value');
+          group.querySelectorAll('.chip').forEach(function (c) {
+            c.setAttribute('aria-pressed', c === chip ? 'true' : 'false');
           });
-          render(visible);
+          apply();
         });
-      }
-      render(items.length);
+      });
+      if (input) input.addEventListener('input', apply);
+      apply();
 
       var top = document.querySelector('.to-top');
       if (top) {

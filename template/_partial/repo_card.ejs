@@ -6,18 +6,40 @@
   const parts = String(repo.full_name || '').split('/');
   const owner = parts[0] || '';
   const name = parts.slice(1).join('/') || repo.full_name;
-  const search = [repo.full_name, repo.language, repo.description].filter(Boolean).join(' ').toLowerCase();
+  const topics = Array.isArray(repo.topics) ? repo.topics : [];
+  const search = [repo.full_name, repo.language, repo.description, topics.join(' ')].filter(Boolean).join(' ').toLowerCase();
+  const license = repo.license && repo.license.spdx_id && repo.license.spdx_id !== 'NOASSERTION' ? repo.license.spdx_id : '';
+  const homepage = repo.homepage && /^https?:\/\//i.test(repo.homepage) ? repo.homepage : '';
+  const ago = (iso) => {
+    const days = Math.floor((Date.now() - new Date(iso).getTime()) / 864e5);
+    if (!Number.isFinite(days)) return '';
+    if (days < 1) return 'today';
+    if (days < 30) return `${days}d ago`;
+    if (days < 365) return `${Math.floor(days / 30)}mo ago`;
+    return `${Math.floor(days / 365)}y ago`;
+  };
+  const updated = repo.pushed_at ? ago(repo.pushed_at) : '';
 %>
-<li class="card" data-search="<%= search %>">
+<li class="card" data-search="<%= search %>" data-lang="<%= (repo.language || '').toLowerCase() %>">
   <div class="card-head">
     <span class="rank rank-<%= idx + 1 %>"><%= idx + 1 %></span>
     <img class="avatar" src="<%= avatar %>" width="28" height="28" loading="lazy" alt="">
     <a class="card-title" href="<%= repo.html_url %>" target="_blank" rel="noopener" title="<%= repo.full_name %>"><span><%= owner %> /</span> <b><%= name %></b></a>
+    <% if (repo.archived) { %><span class="tag tag-archived">Archived</span><% } %>
+    <% if (homepage) { %><a class="home" href="<%= homepage %>" target="_blank" rel="noopener nofollow" title="<%= homepage %>" aria-label="Homepage"><svg width="14" height="14" aria-hidden="true"><use href="#i-home"></use></svg></a><% } %>
   </div>
   <% if (repo.description) { %>
   <p class="card-desc"><%= repo.description %></p>
   <% } else { %>
   <p class="card-desc none">No description provided.</p>
+  <% } %>
+  <% if (topics.length) { %>
+  <div class="topics">
+    <% topics.slice(0, 3).forEach(function(topic) { %>
+    <a class="topic" href="https://github.com/topics/<%= encodeURIComponent(topic) %>" target="_blank" rel="noopener"><%= topic %></a>
+    <% }); %>
+    <% if (topics.length > 3) { %><span class="topic" title="<%= topics.slice(3).join(', ') %>">+<%= topics.length - 3 %></span><% } %>
+  </div>
   <% } %>
   <div class="card-foot">
     <% if (repo.language) { %>
@@ -31,6 +53,12 @@
       <svg width="14" height="14" aria-hidden="true"><use href="#i-fork"></use></svg>
       <span class="num"><%= fmt(forks) %></span>
     </a>
+    <% if (license) { %>
+    <span title="<%= repo.license.name %>"><svg width="14" height="14" aria-hidden="true"><use href="#i-law"></use></svg><%= license %></span>
+    <% } %>
+    <% if (updated) { %>
+    <span title="Last push <%= repo.pushed_at %>"><svg width="14" height="14" aria-hidden="true"><use href="#i-clock"></use></svg>Updated <%= updated %></span>
+    <% } %>
     <% if (today) { %>
     <span class="today num" title="<%= today %>">
       <svg width="12" height="12" aria-hidden="true"><use href="#i-up"></use></svg>

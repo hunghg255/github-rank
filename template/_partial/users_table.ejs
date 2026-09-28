@@ -1,3 +1,29 @@
+<%
+  // Normalise free-text GitHub locations into a few Vietnamese city buckets.
+  const CITIES = [
+    { value: 'hanoi', label: 'Hanoi', test: /\bha ?noi\b/ },
+    { value: 'hcm', label: 'Ho Chi Minh City', test: /\bho ?chi ?minh\b|\bhochiminh\b|\bhcmc?\b|\bsai ?gon\b/ },
+    { value: 'danang', label: 'Da Nang', test: /\bda ?nang\b/ },
+  ];
+  const fold = (str) => String(str || '').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/đ/g, 'd');
+  const cityOf = (location) => {
+    const loc = fold(location);
+    const hit = CITIES.find((c) => c.test.test(loc));
+    if (hit) return hit;
+    if (!loc.replace(/[^a-z]/g, '') || /^\s*(viet ?nam)\W*$/.test(loc)) return { value: 'unknown', label: 'City not specified' };
+    return { value: 'other', label: 'Other cities' };
+  };
+  let chipItems = [];
+  if (cities) {
+    const counts = {};
+    users.forEach((u) => { const c = cityOf(u.location); counts[c.value] = counts[c.value] || { ...c, count: 0 }; counts[c.value].count++; });
+    const order = ['hanoi', 'hcm', 'danang', 'other', 'unknown'];
+    chipItems = order.filter((v) => counts[v]).map((v) => counts[v]);
+  }
+%>
+<% if (cities) { %>
+<%- include('./chips', { key: 'city', label: 'Filter by city', total: users.length, items: chipItems }); %>
+<% } %>
 <ol class="table">
   <li class="row row-head" aria-hidden="true">
     <div>#</div>
@@ -10,6 +36,6 @@
     <div class="c-joined joined">Joined</div>
   </li>
   <% users.forEach(function(user, idx) { %>
-  <%- include('./users_list', { user, idx }); %>
+  <%- include('./users_list', { user, idx, city: cities ? cityOf(user.location) : null }); %>
   <% }); %>
 </ol>

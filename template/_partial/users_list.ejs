@@ -3,17 +3,28 @@
   const displayName = user.name || user.login;
   const joined = user.created_at ? new Date(user.created_at) : null;
   const joinedText = joined ? `${joined.getFullYear()}/${String(joined.getMonth() + 1).padStart(2, '0')}/${String(joined.getDate()).padStart(2, '0')}` : '';
-  const search = [user.login, user.name, user.location, user.company].filter(Boolean).join(' ').toLowerCase();
+  const search = [user.login, user.name, user.location, user.company, city && city.label].filter(Boolean).join(' ').toLowerCase();
+  const blog = user.blog ? (/^https?:\/\//i.test(user.blog) ? user.blog : `https://${user.blog}`) : '';
+  const bio = String(user.bio || '').replace(/\s+/g, ' ').trim();
 %>
-<li class="row" data-search="<%= search %>">
+<li class="row" data-search="<%= search %>"<% if (city) { %> data-city="<%= city.value %>"<% } %>>
   <div class="c-rank"><span class="rank rank-<%= idx + 1 %>"><%= idx + 1 %></span></div>
   <div class="c-user user">
     <a href="<%= user.html_url %>" target="_blank" rel="noopener" tabindex="-1">
       <img class="avatar" src="<%= user.avatar_url %>&s=80" width="40" height="40" loading="lazy" alt="">
     </a>
     <div class="user-name">
-      <a href="<%= user.html_url %>" target="_blank" rel="noopener" title="<%= displayName %>"><%= displayName %></a>
+      <div class="user-title">
+        <a href="<%= user.html_url %>" target="_blank" rel="noopener" title="<%= displayName %>"><%= displayName %></a>
+        <% if (blog || user.twitter_username) { %>
+        <span class="user-links">
+          <% if (blog) { %><a href="<%= blog %>" target="_blank" rel="noopener nofollow" title="<%= user.blog %>" aria-label="Website"><svg width="12" height="12" aria-hidden="true"><use href="#i-link"></use></svg></a><% } %>
+          <% if (user.twitter_username) { %><a href="https://x.com/<%= user.twitter_username %>" target="_blank" rel="noopener nofollow" title="@<%= user.twitter_username %> on X" aria-label="X profile"><svg width="12" height="12" aria-hidden="true"><use href="#i-x"></use></svg></a><% } %>
+        </span>
+        <% } %>
+      </div>
       <span>@<%= user.login %></span>
+      <% if (bio) { %><span class="bio" title="<%= bio %>"><%= bio %></span><% } %>
     </div>
   </div>
   <div class="c-location cell-text" title="<%= user.location || '' %>"><%= user.location || '—' %></div>

@@ -1,0 +1,18 @@
+<%
+  // Language chips: most common languages first, capped so the row stays short.
+  const langs = {};
+  repos.forEach((repo) => {
+    if (!repo.language) return;
+    const l = langs[repo.language] || (langs[repo.language] = { value: repo.language.toLowerCase(), label: repo.language, color: cardOf(repo).color || '', count: 0 });
+    l.count++;
+  });
+  const langItems = Object.values(langs).sort((a, b) => b.count - a.count || a.label.localeCompare(b.label)).slice(0, 15);
+%>
+<% if (langItems.length > 1) { %>
+<%- include('./chips', { key: 'lang', label: 'Filter by language', total: repos.length, items: langItems }); %>
+<% } %>
+<ul class="cards">
+  <% repos.forEach(function(repo, idx) { %>
+  <%- include('./repo_card', Object.assign({ repo, idx }, cardOf(repo))); %>
+  <% }); %>
+</ul>

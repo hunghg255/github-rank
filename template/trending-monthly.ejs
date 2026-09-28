@@ -1,8 +1,9 @@
 <%- include('./_partial/header', { tabCls: 'trending', title: 'Trending Repositories' }); %>
 <%- include('./_partial/trending_nav', { type: 'monthly' }); %>
-<ul class="cards">
-  <% TRENDING_MONTHLY.forEach(function(repo, idx) { %>
-  <%- include('./_partial/trending_list', { repo, idx }); %>
-  <% }); %>
-</ul>
+<%- include('./_partial/repo_list', { repos: TRENDING_MONTHLY, cardOf: (repo) => ({
+  color: repo.color,
+  forks: repo.forked,
+  today: repo.todayStar,
+  avatar: `https://github.com/${String(repo.full_name || '').split('/')[0]}.png?size=56`,
+}) }); %>
 <%- include('./_partial/footer', {}); %>
