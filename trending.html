@@ -263,6 +263,50 @@
     .lang-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--subtle); border: 1px solid rgba(127, 127, 127, .2); }
     .today { margin-left: auto; color: var(--success); font-weight: 600; }
 
+    /* Filter chips */
+    .chips { display: flex; flex-wrap: wrap; gap: 8px; margin: -4px 0 16px; }
+    @media (max-width: 640px) {
+      .chips { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; margin: -4px -16px 16px; padding: 0 16px 2px; }
+    }
+    .chips::-webkit-scrollbar { display: none; }
+    .chip {
+      display: inline-flex; align-items: center; gap: 6px; flex-shrink: 0;
+      height: 32px; padding: 0 12px; border-radius: 999px; cursor: pointer;
+      border: 1px solid var(--border); background: var(--surface); color: var(--text);
+      font: inherit; font-size: 13px; font-weight: 500;
+    }
+    .chip:hover { border-color: var(--accent); }
+    .chip .n { color: var(--muted); font-weight: 400; font-variant-numeric: tabular-nums; }
+    .chip[aria-pressed="true"] { background: var(--text); border-color: var(--text); color: var(--bg); }
+    .chip[aria-pressed="true"] .n { color: inherit; opacity: .7; }
+    .chip .lang-dot { width: 9px; height: 9px; }
+
+    /* User extras */
+    .user-title { display: flex; align-items: center; gap: 6px; min-width: 0; }
+    .user-title > a:first-child { min-width: 0; }
+    .user-links { display: inline-flex; gap: 2px; flex-shrink: 0; }
+    .user-links a { display: inline-grid; place-items: center; width: 22px; height: 22px; border-radius: 6px; color: var(--subtle); }
+    .user-links a:hover { color: var(--accent); background: var(--accent-soft); }
+    .user-name .bio { color: var(--muted); font-size: 12px; margin-top: 2px; }
+    @media (max-width: 720px) {
+      .user-name .bio { white-space: normal; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+    }
+
+    /* Repo extras */
+    .topics { display: flex; flex-wrap: wrap; gap: 6px; }
+    .topic {
+      padding: 1px 9px; border-radius: 999px; font-size: 12px; line-height: 20px;
+      background: var(--accent-soft); color: var(--accent);
+    }
+    .topic:hover { text-decoration: none; background: var(--accent); color: var(--accent-fg); }
+    .tag {
+      flex-shrink: 0; padding: 0 7px; border-radius: 999px; font-size: 11px; line-height: 18px; font-weight: 600;
+      border: 1px solid var(--border); color: var(--muted);
+    }
+    .tag-archived { border-color: #bf8700; color: #bf8700; }
+    .card-head .home { margin-left: auto; color: var(--subtle); display: inline-grid; place-items: center; width: 26px; height: 26px; border-radius: 6px; flex-shrink: 0; }
+    .card-head .home:hover { color: var(--accent); background: var(--accent-soft); }
+
     /* Footer */
     .footer { margin-top: 40px; padding: 24px 0 calc(32px + env(safe-area-inset-bottom)); border-top: 1px solid var(--border); color: var(--muted); font-size: 13px; }
     .footer .container { display: flex; flex-wrap: wrap; gap: 8px 24px; justify-content: space-between; align-items: center; }
@@ -303,6 +347,11 @@
     <symbol id="i-up" viewBox="0 0 16 16" fill="currentColor"><path d="M4.53 4.75 8 1.28l3.47 3.47a.749.749 0 0 1-.326 1.275.749.749 0 0 1-.734-.215L8.75 4.15v10.1a.75.75 0 0 1-1.5 0V4.15L5.59 5.81a.749.749 0 0 1-1.275-.326.749.749 0 0 1 .215-.734Z"></path></symbol>
     <symbol id="i-location" viewBox="0 0 16 16" fill="currentColor"><path d="m12.596 11.596-3.535 3.536a1.5 1.5 0 0 1-2.122 0l-3.535-3.536a6.5 6.5 0 1 1 9.192-9.193 6.5 6.5 0 0 1 0 9.193Zm-1.06-8.132v-.001a5 5 0 1 0-7.072 7.072L8 14.07l3.536-3.534a5 5 0 0 0 0-7.072ZM8 9a2 2 0 1 1-.001-3.999A2 2 0 0 1 8 9Z"></path></symbol>
     <symbol id="i-company" viewBox="0 0 16 16" fill="currentColor"><path d="M1.75 16A1.75 1.75 0 0 1 0 14.25V1.75C0 .784.784 0 1.75 0h8.5C11.216 0 12 .784 12 1.75v12.5c0 .085-.006.168-.018.25h2.268a.25.25 0 0 0 .25-.25V8.285a.25.25 0 0 0-.111-.208l-1.055-.703a.749.749 0 1 1 .832-1.248l1.055.703c.487.325.779.871.779 1.456v5.965A1.75 1.75 0 0 1 14.25 16h-3.5a.766.766 0 0 1-.197-.026c-.099.017-.2.026-.303.026h-3a.75.75 0 0 1-.75-.75V14h-1v1.25a.75.75 0 0 1-.75.75Zm-.25-1.75c0 .138.112.25.25.25H4v-1.25a.75.75 0 0 1 .75-.75h2.5a.75.75 0 0 1 .75.75v1.25h2.25a.25.25 0 0 0 .25-.25V1.75a.25.25 0 0 0-.25-.25h-8.5a.25.25 0 0 0-.25.25ZM3.75 6h.5a.75.75 0 0 1 0 1.5h-.5a.75.75 0 0 1 0-1.5ZM3 3.75A.75.75 0 0 1 3.75 3h.5a.75.75 0 0 1 0 1.5h-.5A.75.75 0 0 1 3 3.75Zm4 3A.75.75 0 0 1 7.75 6h.5a.75.75 0 0 1 0 1.5h-.5A.75.75 0 0 1 7 6.75ZM7.75 3h.5a.75.75 0 0 1 0 1.5h-.5a.75.75 0 0 1 0-1.5ZM3 9.75A.75.75 0 0 1 3.75 9h.5a.75.75 0 0 1 0 1.5h-.5A.75.75 0 0 1 3 9.75ZM7.75 9h.5a.75.75 0 0 1 0 1.5h-.5a.75.75 0 0 1 0-1.5Z"></path></symbol>
+    <symbol id="i-link" viewBox="0 0 16 16" fill="currentColor"><path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z"></path></symbol>
+    <symbol id="i-x" viewBox="0 0 16 16" fill="currentColor"><path d="M9.52 6.78 15.34 0h-1.38L8.9 5.89 4.87 0H.21l6.1 8.88L.21 16h1.38l5.33-6.2L11.18 16h4.66L9.52 6.78Zm-1.89 2.2-.62-.89L2.09 1.04h2.12l3.97 5.68.62.89 5.16 7.38h-2.12L7.63 8.98Z"></path></symbol>
+    <symbol id="i-law" viewBox="0 0 16 16" fill="currentColor"><path d="M8.75.75V2h.985c.304 0 .603.08.867.231l1.29.736c.038.022.08.033.124.033h2.234a.75.75 0 0 1 0 1.5h-.427l2.111 4.692a.75.75 0 0 1-.154.838l-.53-.53.529.531-.001.002-.002.002-.006.006-.006.005-.01.01-.045.04c-.21.176-.441.327-.686.45C14.556 10.78 13.88 11 13 11a4.498 4.498 0 0 1-2.023-.454 3.544 3.544 0 0 1-.686-.45l-.045-.04-.016-.015-.006-.006-.004-.004v-.001a.75.75 0 0 1-.154-.838L12.178 4.5h-.162c-.305 0-.604-.079-.868-.231l-1.29-.736a.245.245 0 0 0-.124-.033H8.75V13h2.5a.75.75 0 0 1 0 1.5h-6.5a.75.75 0 0 1 0-1.5h2.5V3.5h-.984a.245.245 0 0 0-.124.033l-1.289.737c-.265.15-.564.23-.869.23h-.162l2.112 4.692a.75.75 0 0 1-.154.838l-.53-.53.529.531-.001.002-.002.002-.006.006-.016.015-.045.04c-.21.176-.441.327-.686.45C4.556 10.78 3.88 11 3 11a4.498 4.498 0 0 1-2.023-.454 3.544 3.544 0 0 1-.686-.45l-.045-.04-.016-.015-.006-.006-.004-.004v-.001a.75.75 0 0 1-.154-.838L2.178 4.5H1.75a.75.75 0 0 1 0-1.5h2.234a.249.249 0 0 0 .125-.033l1.288-.737c.265-.15.564-.23.869-.23h.984V.75a.75.75 0 0 1 1.5 0Zm2.945 8.477c.285.135.718.273 1.305.273s1.02-.138 1.305-.273L13 6.327Zm-10 0c.285.135.718.273 1.305.273s1.02-.138 1.305-.273L3 6.327Z"></path></symbol>
+    <symbol id="i-clock" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0ZM1.5 8a6.5 6.5 0 1 0 13 0 6.5 6.5 0 0 0-13 0Zm7-3.25v2.992l2.028.812a.75.75 0 0 1-.557 1.392l-2.5-1A.751.751 0 0 1 7 8.25v-3.5a.75.75 0 0 1 1.5 0Z"></path></symbol>
+    <symbol id="i-home" viewBox="0 0 16 16" fill="currentColor"><path d="M6.906.664a1.749 1.749 0 0 1 2.187 0l5.25 4.2c.415.332.657.835.657 1.367v7.019A1.75 1.75 0 0 1 13.25 15h-3.5a.75.75 0 0 1-.75-.75V9H7v5.25a.75.75 0 0 1-.75.75h-3.5A1.75 1.75 0 0 1 1 13.25V6.23c0-.531.242-1.034.657-1.366l5.25-4.2Zm1.25 1.171a.25.25 0 0 0-.312 0l-5.25 4.2a.25.25 0 0 0-.094.196v7.019c0 .138.112.25.25.25H5.5V8.25a.75.75 0 0 1 .75-.75h3.5a.75.75 0 0 1 .75.75v5.25h2.75a.25.25 0 0 0 .25-.25V6.23a.25.25 0 0 0-.094-.195Z"></path></symbol>
   </svg>
   <header class="topbar">
     <div class="container">
@@ -364,17 +413,37 @@
 </div>
 
 
+
+
+
+<div class="chips" role="group" aria-label="Filter by language" data-filter="lang">
+  <button class="chip" type="button" data-value="" aria-pressed="true">All <span class="n">9</span></button>
+  
+  <button class="chip" type="button" data-value="typescript" aria-pressed="false"><span class="lang-dot" style="background-color: #3178c6"></span>TypeScript <span class="n">4</span></button>
+  
+  <button class="chip" type="button" data-value="python" aria-pressed="false"><span class="lang-dot" style="background-color: #3572A5"></span>Python <span class="n">3</span></button>
+  
+  <button class="chip" type="button" data-value="c" aria-pressed="false"><span class="lang-dot" style="background-color: #555555"></span>C <span class="n">1</span></button>
+  
+  <button class="chip" type="button" data-value="shell" aria-pressed="false"><span class="lang-dot" style="background-color: #89e051"></span>Shell <span class="n">1</span></button>
+  
+</div>
+
+
 <ul class="cards">
   
   
-<li class="card" data-search="paperclipai/paperclip typescript the open-source app everyone uses to manage agents at work">
+<li class="card" data-search="paperclipai/paperclip typescript the open-source app everyone uses to manage agents at work" data-lang="typescript">
   <div class="card-head">
     <span class="rank rank-1">1</span>
     <img class="avatar" src="https://github.com/paperclipai.png?size=56" width="28" height="28" loading="lazy" alt="">
     <a class="card-title" href="https://github.com/paperclipai/paperclip" target="_blank" rel="noopener" title="paperclipai/paperclip"><span>paperclipai /</span> <b>paperclip</b></a>
+    
+    
   </div>
   
   <p class="card-desc">The open-source app everyone uses to manage agents at work</p>
+  
   
   <div class="card-foot">
     
@@ -382,12 +451,14 @@
     
     <a href="https://github.com/paperclipai/paperclip/stargazers" target="_blank" rel="noopener" title="Stars">
       <svg width="14" height="14" aria-hidden="true"><use href="#i-star"></use></svg>
-      <span class="num">90,159</span>
+      <span class="num">90,338</span>
     </a>
     <a href="https://github.com/paperclipai/paperclip/forks" target="_blank" rel="noopener" title="Forks">
       <svg width="14" height="14" aria-hidden="true"><use href="#i-fork"></use></svg>
-      <span class="num">15,689</span>
+      <span class="num">15,698</span>
     </a>
+    
+    
     
     <span class="today num" title="2401 stars today">
       <svg width="12" height="12" aria-hidden="true"><use href="#i-up"></use></svg>
@@ -397,17 +468,19 @@
   </div>
 </li>
 
-
   
   
-<li class="card" data-search="vectorize-io/hindsight python hindsight: agent memory that learns">
+<li class="card" data-search="vectorize-io/hindsight python hindsight: agent memory that learns" data-lang="python">
   <div class="card-head">
     <span class="rank rank-2">2</span>
     <img class="avatar" src="https://github.com/vectorize-io.png?size=56" width="28" height="28" loading="lazy" alt="">
     <a class="card-title" href="https://github.com/vectorize-io/hindsight" target="_blank" rel="noopener" title="vectorize-io/hindsight"><span>vectorize-io /</span> <b>hindsight</b></a>
+    
+    
   </div>
   
   <p class="card-desc">Hindsight: Agent Memory That Learns</p>
+  
   
   <div class="card-foot">
     
@@ -415,12 +488,14 @@
     
     <a href="https://github.com/vectorize-io/hindsight/stargazers" target="_blank" rel="noopener" title="Stars">
       <svg width="14" height="14" aria-hidden="true"><use href="#i-star"></use></svg>
-      <span class="num">37,571</span>
+      <span class="num">37,785</span>
     </a>
     <a href="https://github.com/vectorize-io/hindsight/forks" target="_blank" rel="noopener" title="Forks">
       <svg width="14" height="14" aria-hidden="true"><use href="#i-fork"></use></svg>
-      <span class="num">4,862</span>
+      <span class="num">4,894</span>
     </a>
+    
+    
     
     <span class="today num" title="4520 stars today">
       <svg width="12" height="12" aria-hidden="true"><use href="#i-up"></use></svg>
@@ -430,17 +505,19 @@
   </div>
 </li>
 
-
   
   
-<li class="card" data-search="debpalash/voicestudio python voicestudio is the open-source, fully-local elevenlabs alternative — voice cloning, voice design, video dubbing, dictation, transcription &amp; audiobook creation in 646 languages.">
+<li class="card" data-search="debpalash/voicestudio python voicestudio is the open-source, fully-local elevenlabs alternative — voice cloning, voice design, video dubbing, dictation, transcription &amp; audiobook creation in 646 languages." data-lang="python">
   <div class="card-head">
     <span class="rank rank-3">3</span>
     <img class="avatar" src="https://github.com/debpalash.png?size=56" width="28" height="28" loading="lazy" alt="">
     <a class="card-title" href="https://github.com/debpalash/VoiceStudio" target="_blank" rel="noopener" title="debpalash/VoiceStudio"><span>debpalash /</span> <b>VoiceStudio</b></a>
+    
+    
   </div>
   
   <p class="card-desc">VoiceStudio is the open-source, fully-local ElevenLabs alternative — voice cloning, voice design, video dubbing, dictation, transcription &amp; audiobook creation in 646 languages.</p>
+  
   
   <div class="card-foot">
     
@@ -448,12 +525,14 @@
     
     <a href="https://github.com/debpalash/VoiceStudio/stargazers" target="_blank" rel="noopener" title="Stars">
       <svg width="14" height="14" aria-hidden="true"><use href="#i-star"></use></svg>
-      <span class="num">40,370</span>
+      <span class="num">40,511</span>
     </a>
     <a href="https://github.com/debpalash/VoiceStudio/forks" target="_blank" rel="noopener" title="Forks">
       <svg width="14" height="14" aria-hidden="true"><use href="#i-fork"></use></svg>
-      <span class="num">4,794</span>
+      <span class="num">4,810</span>
     </a>
+    
+    
     
     <span class="today num" title="3086 stars today">
       <svg width="12" height="12" aria-hidden="true"><use href="#i-up"></use></svg>
@@ -463,17 +542,19 @@
   </div>
 </li>
 
-
   
   
-<li class="card" data-search="rohitg00/ai-engineering-from-scratch python learn it. build it. ship it for others.">
+<li class="card" data-search="rohitg00/ai-engineering-from-scratch python learn it. build it. ship it for others." data-lang="python">
   <div class="card-head">
     <span class="rank rank-4">4</span>
     <img class="avatar" src="https://github.com/rohitg00.png?size=56" width="28" height="28" loading="lazy" alt="">
     <a class="card-title" href="https://github.com/rohitg00/ai-engineering-from-scratch" target="_blank" rel="noopener" title="rohitg00/ai-engineering-from-scratch"><span>rohitg00 /</span> <b>ai-engineering-from-scratch</b></a>
+    
+    
   </div>
   
   <p class="card-desc">Learn it. Build it. Ship it for others.</p>
+  
   
   <div class="card-foot">
     
@@ -481,12 +562,14 @@
     
     <a href="https://github.com/rohitg00/ai-engineering-from-scratch/stargazers" target="_blank" rel="noopener" title="Stars">
       <svg width="14" height="14" aria-hidden="true"><use href="#i-star"></use></svg>
-      <span class="num">59,418</span>
+      <span class="num">59,503</span>
     </a>
     <a href="https://github.com/rohitg00/ai-engineering-from-scratch/forks" target="_blank" rel="noopener" title="Forks">
       <svg width="14" height="14" aria-hidden="true"><use href="#i-fork"></use></svg>
-      <span class="num">10,249</span>
+      <span class="num">10,257</span>
     </a>
+    
+    
     
     <span class="today num" title="790 stars today">
       <svg width="12" height="12" aria-hidden="true"><use href="#i-up"></use></svg>
@@ -496,17 +579,19 @@
   </div>
 </li>
 
-
   
   
-<li class="card" data-search="infinityloop1308/pipepipe shell an open-source android app to let you browse youtube and other services freely.">
+<li class="card" data-search="infinityloop1308/pipepipe shell an open-source android app to let you browse youtube and other services freely." data-lang="shell">
   <div class="card-head">
     <span class="rank rank-5">5</span>
     <img class="avatar" src="https://github.com/InfinityLoop1308.png?size=56" width="28" height="28" loading="lazy" alt="">
     <a class="card-title" href="https://github.com/InfinityLoop1308/PipePipe" target="_blank" rel="noopener" title="InfinityLoop1308/PipePipe"><span>InfinityLoop1308 /</span> <b>PipePipe</b></a>
+    
+    
   </div>
   
   <p class="card-desc">An open-source Android app to let you browse YouTube and other services freely.</p>
+  
   
   <div class="card-foot">
     
@@ -514,12 +599,14 @@
     
     <a href="https://github.com/InfinityLoop1308/PipePipe/stargazers" target="_blank" rel="noopener" title="Stars">
       <svg width="14" height="14" aria-hidden="true"><use href="#i-star"></use></svg>
-      <span class="num">6,616</span>
+      <span class="num">6,640</span>
     </a>
     <a href="https://github.com/InfinityLoop1308/PipePipe/forks" target="_blank" rel="noopener" title="Forks">
       <svg width="14" height="14" aria-hidden="true"><use href="#i-fork"></use></svg>
-      <span class="num">223</span>
+      <span class="num">224</span>
     </a>
+    
+    
     
     <span class="today num" title="242 stars today">
       <svg width="12" height="12" aria-hidden="true"><use href="#i-up"></use></svg>
@@ -529,17 +616,19 @@
   </div>
 </li>
 
-
   
   
-<li class="card" data-search="vercel-labs/scriptc typescript typescript-to-native compiler">
+<li class="card" data-search="vercel-labs/scriptc typescript typescript-to-native compiler" data-lang="typescript">
   <div class="card-head">
     <span class="rank rank-6">6</span>
     <img class="avatar" src="https://github.com/vercel-labs.png?size=56" width="28" height="28" loading="lazy" alt="">
     <a class="card-title" href="https://github.com/vercel-labs/scriptc" target="_blank" rel="noopener" title="vercel-labs/scriptc"><span>vercel-labs /</span> <b>scriptc</b></a>
+    
+    
   </div>
   
   <p class="card-desc">TypeScript-to-Native Compiler</p>
+  
   
   <div class="card-foot">
     
@@ -547,12 +636,14 @@
     
     <a href="https://github.com/vercel-labs/scriptc/stargazers" target="_blank" rel="noopener" title="Stars">
       <svg width="14" height="14" aria-hidden="true"><use href="#i-star"></use></svg>
-      <span class="num">5,435</span>
+      <span class="num">5,451</span>
     </a>
     <a href="https://github.com/vercel-labs/scriptc/forks" target="_blank" rel="noopener" title="Forks">
       <svg width="14" height="14" aria-hidden="true"><use href="#i-fork"></use></svg>
       <span class="num">142</span>
     </a>
+    
+    
     
     <span class="today num" title="102 stars today">
       <svg width="12" height="12" aria-hidden="true"><use href="#i-up"></use></svg>
@@ -562,17 +653,19 @@
   </div>
 </li>
 
-
   
   
-<li class="card" data-search="mvschwarz/openrig typescript multi-agent harness that runs claude code and codex together as one system">
+<li class="card" data-search="mvschwarz/openrig typescript multi-agent harness that runs claude code and codex together as one system" data-lang="typescript">
   <div class="card-head">
     <span class="rank rank-7">7</span>
     <img class="avatar" src="https://github.com/mvschwarz.png?size=56" width="28" height="28" loading="lazy" alt="">
     <a class="card-title" href="https://github.com/mvschwarz/openrig" target="_blank" rel="noopener" title="mvschwarz/openrig"><span>mvschwarz /</span> <b>openrig</b></a>
+    
+    
   </div>
   
   <p class="card-desc">Multi-agent harness that runs Claude Code and Codex together as one system</p>
+  
   
   <div class="card-foot">
     
@@ -580,12 +673,14 @@
     
     <a href="https://github.com/mvschwarz/openrig/stargazers" target="_blank" rel="noopener" title="Stars">
       <svg width="14" height="14" aria-hidden="true"><use href="#i-star"></use></svg>
-      <span class="num">1,043</span>
+      <span class="num">1,084</span>
     </a>
     <a href="https://github.com/mvschwarz/openrig/forks" target="_blank" rel="noopener" title="Forks">
       <svg width="14" height="14" aria-hidden="true"><use href="#i-fork"></use></svg>
-      <span class="num">106</span>
+      <span class="num">107</span>
     </a>
+    
+    
     
     <span class="today num" title="114 stars today">
       <svg width="12" height="12" aria-hidden="true"><use href="#i-up"></use></svg>
@@ -595,17 +690,19 @@
   </div>
 </li>
 
-
   
   
-<li class="card" data-search="dream-num/univer typescript the office harness for ai agents — spreadsheets, docs, slides, canvas, relational tables, and pdf in one runtime.">
+<li class="card" data-search="dream-num/univer typescript the office harness for ai agents — spreadsheets, docs, slides, canvas, relational tables, and pdf in one runtime." data-lang="typescript">
   <div class="card-head">
     <span class="rank rank-8">8</span>
     <img class="avatar" src="https://github.com/dream-num.png?size=56" width="28" height="28" loading="lazy" alt="">
     <a class="card-title" href="https://github.com/dream-num/univer" target="_blank" rel="noopener" title="dream-num/univer"><span>dream-num /</span> <b>univer</b></a>
+    
+    
   </div>
   
   <p class="card-desc">The Office Harness for AI Agents — Spreadsheets, Docs, Slides, Canvas, Relational Tables, and PDF in one runtime.</p>
+  
   
   <div class="card-foot">
     
@@ -613,12 +710,14 @@
     
     <a href="https://github.com/dream-num/univer/stargazers" target="_blank" rel="noopener" title="Stars">
       <svg width="14" height="14" aria-hidden="true"><use href="#i-star"></use></svg>
-      <span class="num">20,493</span>
+      <span class="num">20,680</span>
     </a>
     <a href="https://github.com/dream-num/univer/forks" target="_blank" rel="noopener" title="Forks">
       <svg width="14" height="14" aria-hidden="true"><use href="#i-fork"></use></svg>
-      <span class="num">1,724</span>
+      <span class="num">1,735</span>
     </a>
+    
+    
     
     <span class="today num" title="895 stars today">
       <svg width="12" height="12" aria-hidden="true"><use href="#i-up"></use></svg>
@@ -628,17 +727,19 @@
   </div>
 </li>
 
-
   
   
-<li class="card" data-search="willfaust/madeira c run x86-64 windows pc games on jailed ios via fex-emu + wine + dxmt">
+<li class="card" data-search="willfaust/madeira c run x86-64 windows pc games on jailed ios via fex-emu + wine + dxmt" data-lang="c">
   <div class="card-head">
     <span class="rank rank-9">9</span>
     <img class="avatar" src="https://github.com/willfaust.png?size=56" width="28" height="28" loading="lazy" alt="">
     <a class="card-title" href="https://github.com/willfaust/Madeira" target="_blank" rel="noopener" title="willfaust/Madeira"><span>willfaust /</span> <b>Madeira</b></a>
+    
+    
   </div>
   
   <p class="card-desc">Run x86-64 Windows PC games on jailed iOS via FEX-Emu + Wine + DXMT</p>
+  
   
   <div class="card-foot">
     
@@ -646,12 +747,14 @@
     
     <a href="https://github.com/willfaust/Madeira/stargazers" target="_blank" rel="noopener" title="Stars">
       <svg width="14" height="14" aria-hidden="true"><use href="#i-star"></use></svg>
-      <span class="num">843</span>
+      <span class="num">859</span>
     </a>
     <a href="https://github.com/willfaust/Madeira/forks" target="_blank" rel="noopener" title="Forks">
       <svg width="14" height="14" aria-hidden="true"><use href="#i-fork"></use></svg>
-      <span class="num">152</span>
+      <span class="num">153</span>
     </a>
+    
+    
     
     <span class="today num" title="83 stars today">
       <svg width="12" height="12" aria-hidden="true"><use href="#i-up"></use></svg>
@@ -661,9 +764,9 @@
   </div>
 </li>
 
-
   
 </ul>
+
     <p class="empty" id="empty">No results match your search.</p>
   </main>
 
@@ -696,30 +799,55 @@
         try { localStorage.setItem('gr-theme', next); } catch (e) {}
       });
 
-      // Client-side filter over items carrying data-search.
+      // Client-side filter: free-text search AND the active chip of each chip group.
+      function fold(str) {
+        return String(str || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/đ/g, 'd');
+      }
       var input = document.getElementById('search');
       var items = Array.prototype.slice.call(document.querySelectorAll('[data-search]'));
       var count = document.getElementById('count');
       var empty = document.getElementById('empty');
-      function render(visible) {
+      var groups = Array.prototype.slice.call(document.querySelectorAll('[data-filter]'));
+      var active = {};
+      function flat(str) { return str.replace(/[\s.,_-]+/g, ''); }
+      items.forEach(function (el) {
+        el._text = fold(el.getAttribute('data-search'));
+        el._flat = flat(el._text);
+      });
+
+      function apply() {
+        var q = input ? fold(input.value.trim()) : '';
+        var qFlat = flat(q);
+        var visible = 0;
+        items.forEach(function (el) {
+          // "ha noi" should find "Hanoi", so also compare with separators removed.
+          var match = !q || el._text.indexOf(q) !== -1 || (qFlat && el._flat.indexOf(qFlat) !== -1);
+          for (var key in active) {
+            if (active[key] && el.getAttribute('data-' + key) !== active[key]) match = false;
+          }
+          el.hidden = !match;
+          if (match) visible++;
+        });
         if (count) count.textContent = visible === items.length
           ? items.length.toLocaleString() + ' items'
           : visible.toLocaleString() + ' of ' + items.length.toLocaleString();
         if (empty) empty.style.display = visible ? 'none' : 'block';
       }
-      if (input) {
-        input.addEventListener('input', function () {
-          var q = input.value.trim().toLowerCase();
-          var visible = 0;
-          items.forEach(function (el) {
-            var match = !q || el.getAttribute('data-search').indexOf(q) !== -1;
-            el.hidden = !match;
-            if (match) visible++;
+
+      groups.forEach(function (group) {
+        var key = group.getAttribute('data-filter');
+        group.addEventListener('click', function (e) {
+          var chip = e.target.closest('.chip');
+          if (!chip) return;
+          active[key] = chip.getAttribute('data-value');
+          group.querySelectorAll('.chip').forEach(function (c) {
+            c.setAttribute('aria-pressed', c === chip ? 'true' : 'false');
           });
-          render(visible);
+          apply();
         });
-      }
-      render(items.length);
+      });
+      if (input) input.addEventListener('input', apply);
+      apply();
 
       var top = document.querySelector('.to-top');
       if (top) {
