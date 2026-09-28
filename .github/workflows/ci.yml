@@ -12,10 +12,6 @@ on:
 permissions:
   contents: write
 
-concurrency:
-  group: build-deploy
-  cancel-in-progress: false
-
 jobs:
   build-deploy:
     env:
