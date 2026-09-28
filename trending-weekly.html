@@ -2,857 +2,1031 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <link rel="icon" type="image/x-icon" href="https://github.githubassets.com/favicon.ico">
-  <title> GitHub Repositories Trending </title>
-  <meta name="description" content="GitHub Repositories Trending">
+  <title>Trending Repositories · GitHub Rank</title>
+  <meta name="description" content="Trending Repositories">
+  <meta name="theme-color" content="#0d1117" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#f6f8fa" media="(prefers-color-scheme: light)">
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem('gr-theme');
+        if (saved === 'light' || saved === 'dark') document.documentElement.setAttribute('data-theme', saved);
+      } catch (e) {}
+    })();
+  </script>
   <style>
-    [data-color-mode*='dark'] {
-      --color-fg-default: #c9d1d9;
-      --color-fg-muted: #8b949e;
-      --color-fg-subtle: #484f58;
-      --color-accent-fg: #58a6ff;
-      --color-accent-emphasis: #1f6feb;
-      --color-link-hover: #58a6ff;
-      --color-tab-fg: #494949;
-      --color-border: #e2e2e2;
-      --color-neutral-muted: rgba(110,118,129,0.4);
+    :root {
+      --bg: #f6f8fa;
+      --surface: #ffffff;
+      --surface-2: #f6f8fa;
+      --text: #1f2328;
+      --muted: #59636e;
+      --subtle: #818b98;
+      --border: #d1d9e0;
+      --border-soft: #e5e9ee;
+      --accent: #0969da;
+      --accent-soft: rgba(9, 105, 218, .1);
+      --accent-fg: #ffffff;
+      --success: #1a7f37;
+      --gold: #d4a72c;
+      --silver: #8c959f;
+      --bronze: #bc6d3b;
+      --shadow: 0 1px 2px rgba(31, 35, 40, .06), 0 1px 3px rgba(31, 35, 40, .04);
+      --shadow-hover: 0 6px 20px rgba(31, 35, 40, .1);
+      --radius: 12px;
+      color-scheme: light;
     }
-    [data-color-mode*='light'] {
-      --color-fg-default: #24292f;
-      --color-fg-muted: #57606a;
-      --color-fg-subtle: #6e7781;
-      --color-accent-fg: #0969da;
-      --color-accent-emphasis: #0969da;
-      --color-link-hover: #58a6ff;
-      --color-tab-fg: #e2e2e2;
-      --color-border: #000;
-      --color-neutral-muted: rgba(175,184,193,0.2);
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme="light"]) {
+        --bg: #0d1117;
+        --surface: #151b23;
+        --surface-2: #10151c;
+        --text: #e6edf3;
+        --muted: #9198a1;
+        --subtle: #6e7681;
+        --border: #30363d;
+        --border-soft: #242a31;
+        --accent: #4493f8;
+        --accent-soft: rgba(68, 147, 248, .14);
+        --accent-fg: #0d1117;
+        --success: #3fb950;
+        --shadow: 0 1px 2px rgba(0, 0, 0, .3);
+        --shadow-hover: 0 8px 24px rgba(0, 0, 0, .45);
+        color-scheme: dark;
+      }
     }
-  </style>
-  <style>
-    * { box-sizing: border-box; }
-    html, body, ul, li, h1 { margin: 0; padding: 0 }
-    html, body { font-size: 16px; font-family: -apple-system,"Helvetica Neue",Helvetica,Arial,"PingFang SC","Hiragino Sans GB","WenQuanYi Micro Hei","Microsoft Yahei",sans-serif; }
-    ul { list-style: none; }
+    :root[data-theme="dark"] {
+      --bg: #0d1117;
+      --surface: #151b23;
+      --surface-2: #10151c;
+      --text: #e6edf3;
+      --muted: #9198a1;
+      --subtle: #6e7681;
+      --border: #30363d;
+      --border-soft: #242a31;
+      --accent: #4493f8;
+      --accent-soft: rgba(68, 147, 248, .14);
+      --accent-fg: #0d1117;
+      --success: #3fb950;
+      --shadow: 0 1px 2px rgba(0, 0, 0, .3);
+      --shadow-hover: 0 8px 24px rgba(0, 0, 0, .45);
+      color-scheme: dark;
+    }
 
-    a { color: var(--color-accent-fg); text-decoration: none; transition: all .2s ease-in; }
-    a:hover { color: var(--color-link-hover); text-decoration: underline; }
-    a.github-corner:hover .octo-arm { animation: octocat-wave 560ms infinite linear; }
-    a.github-corner svg { fill: #f1f1f1; color: #000; position: absolute; top: 0; border: 0; right: 0; z-index: 99; width: 70px; height: 70px; }
-    a.github-corner { position: fixed; z-index: 9999; top: 0; right: 0; }
+    *, *::before, *::after { box-sizing: border-box; }
+    [hidden] { display: none !important; }
+    html { -webkit-text-size-adjust: 100%; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font: 14px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    img { display: block; }
+    svg { flex-shrink: 0; }
+    .container { width: 100%; max-width: 1200px; margin: 0 auto; padding: 0 16px; }
+    .num { font-variant-numeric: tabular-nums; }
 
-    .title { padding: 32px 20px 10px 20px; font-size: 32px; display: flex; }
-    .title a svg { display: block; }
-    .title a { color: var(--color-accent-fg); display: inline-block; margin-left: 10px; }
-    .title dark-mode {
-      margin-right: 8px;
+    /* Top bar */
+    .topbar {
+      position: sticky; top: 0; z-index: 20;
+      background: color-mix(in srgb, var(--surface) 85%, transparent);
+      backdrop-filter: saturate(180%) blur(12px);
+      -webkit-backdrop-filter: saturate(180%) blur(12px);
+      border-bottom: 1px solid var(--border);
     }
-    .time, .footer { padding: 5px 20px 2px 20px; font-size: 12px; color: #adadad; }
-    .tabs { padding: 0 20px 5px 20px;}
-    .tabs a { background: var(--color-tab-fg); display: inline-block; border-radius: 2px; margin: 2px 0; padding: 2px 5px; font-size: 12px; line-height: 16px; color: var(--color-accent-fg); }
-    .tabs a.active { background: #333; color: #efefef; }
-    .tabs a:hover:not(.active) { background: #efefef; }
-    .footer { padding: 0 20px 30px 20px; font-size: 12px; color: #adadad; }
-    .footer .time { padding: 0; }
-    .list { text-align: left; padding-bottom: 10px; margin: 0 15px; }
-    .list img { width: 36px; height: 36px; border-radius: 3px; display: block; margin: 0 auto; background-color: #e2e2e2; border: 0; overflow: hidden; }
-    .list li { padding: 10px; transition: all .3s; }
-    .list li.rank-title { margin: 0; padding: 3px 0 0 7px; margin-bottom: 10px; border-radius: 5px; font-size: 12px; line-height: 16px; }
-    .list li.rank-title > a { margin-right: 10px; }
-    .list li.rank-title:hover { background: transparent; }
-    .list li:last-child, .list li.rank-title { border-bottom: 0; }
-    .list li:hover { background: var(--color-neutral-muted); }
-    .list li > div { display: table-cell; vertical-align: top; font-size: 14px; }
-    .list li div.rank span { font-weight: bold; }
-    .list li div.details { padding: 2px 0 0 0; font-size: 12px; float: left; color: var(--color-fg-muted); }
-    .list li div.details a { color: #b9b9b9; transition: all .3s; }
-    .list li div.details a:hover { color: #1600ff; }
-    .list li div.details a:hover svg { fill: #1600ff; }
-    .list li div.details * { vertical-align: middle; }
-    .list li div.details .localtion { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; max-width: 150px; display: inline-block; height: 14px; }
-    .list li div.details svg { width: 12px; height: 12px; margin-top: 0; margin-right: 2px; fill: #b9b9b9; display: inline-block; }
-    .list li > div.info { width: 100%; }
-    .list li > div.info i { color: #717171; }
-    .list li > div.info a:hover i { color: #333; }
-    .list li div.sub-title { color: var(--color-theme-text); margin: 4px 0 0 0; }
-    .list li div.avatar { padding-right: 10px; }
-    @keyframes octocat-wave {
-      0%,100%{-webkit-transform:rotate(0); transform:rotate(0);}
-      20%,60%{-webkit-transform:rotate(-25deg); transform:rotate(-25deg);}
-      40%,80%{-webkit-transform:rotate(10deg); transform:rotate(10deg);}
+    .topbar .container { display: flex; align-items: center; gap: 16px; height: 60px; }
+    .brand { display: flex; align-items: center; gap: 10px; color: var(--text); font-weight: 700; font-size: 16px; white-space: nowrap; }
+    .brand:hover { text-decoration: none; }
+    .brand-logo { width: 32px; height: 32px; border-radius: 8px; display: grid; place-items: center; background: var(--text); color: var(--bg); }
+    .nav { display: flex; gap: 4px; margin-left: auto; }
+    .nav a {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 6px 12px; border-radius: 8px;
+      color: var(--muted); font-weight: 500;
     }
-    @media screen and (max-width: 479px) {
-      .title { padding-top: 16px; font-size: 21px; }
+    .nav a:hover { background: var(--surface-2); color: var(--text); text-decoration: none; }
+    .nav a.active { background: var(--accent-soft); color: var(--accent); }
+    .icon-btn {
+      display: inline-grid; place-items: center; width: 36px; height: 36px;
+      border-radius: 8px; border: 1px solid var(--border); background: var(--surface);
+      color: var(--muted); cursor: pointer; padding: 0;
+    }
+    .icon-btn:hover { color: var(--text); background: var(--surface-2); text-decoration: none; }
+    .actions { display: flex; gap: 8px; }
+    .theme-toggle .moon { display: none; }
+    :root[data-theme="dark"] .theme-toggle .sun { display: none; }
+    :root[data-theme="dark"] .theme-toggle .moon { display: block; }
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme="light"]) .theme-toggle .sun { display: none; }
+      :root:not([data-theme="light"]) .theme-toggle .moon { display: block; }
+    }
+
+    /* Hero */
+    .hero { padding: 32px 0 20px; }
+    .hero h1 { margin: 0 0 6px; font-size: clamp(22px, 4vw, 32px); line-height: 1.2; letter-spacing: -.02em; }
+    .hero p { margin: 0; color: var(--muted); }
+    .hero p a { font-weight: 500; }
+
+    /* Toolbar */
+    .toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-bottom: 16px; }
+    .segmented { display: inline-flex; padding: 3px; border-radius: 10px; background: var(--surface); border: 1px solid var(--border); }
+    .segmented a { padding: 5px 14px; border-radius: 7px; color: var(--muted); font-weight: 500; }
+    .segmented a:hover { color: var(--text); text-decoration: none; }
+    .segmented a.active { background: var(--text); color: var(--bg); }
+    .search { position: relative; flex: 1 1 240px; max-width: 360px; margin-left: auto; }
+    .search svg { position: absolute; left: 11px; top: 50%; transform: translateY(-50%); color: var(--subtle); pointer-events: none; }
+    .search input {
+      width: 100%; height: 38px; padding: 0 12px 0 34px;
+      border-radius: 10px; border: 1px solid var(--border);
+      background: var(--surface); color: var(--text); font: inherit;
+    }
+    .search input:focus { outline: 2px solid var(--accent); outline-offset: -1px; border-color: transparent; }
+    .count { color: var(--muted); font-size: 13px; }
+    .empty { display: none; padding: 48px 16px; text-align: center; color: var(--muted); }
+
+    /* Rank badge */
+    .rank {
+      display: inline-grid; place-items: center; min-width: 30px; height: 26px; padding: 0 6px;
+      border-radius: 7px; font-weight: 700; font-size: 12px;
+      color: var(--muted); background: var(--surface-2); border: 1px solid var(--border-soft);
+      font-variant-numeric: tabular-nums;
+    }
+    .rank-1 { color: #fff; background: var(--gold); border-color: var(--gold); }
+    .rank-2 { color: #fff; background: var(--silver); border-color: var(--silver); }
+    .rank-3 { color: #fff; background: var(--bronze); border-color: var(--bronze); }
+
+    .avatar { border-radius: 50%; background: var(--border-soft); object-fit: cover; }
+
+    /* Users table */
+    .table {
+      background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+      overflow: clip; box-shadow: var(--shadow); margin: 0; padding: 0; list-style: none;
+    }
+    .row {
+      display: grid; align-items: center; gap: 12px;
+      grid-template-columns: 44px minmax(200px, 2fr) minmax(0, 1.3fr) minmax(0, 1.3fr) 96px 90px 72px 96px;
+      padding: 10px 16px; border-top: 1px solid var(--border-soft);
+    }
+    .row:first-child { border-top: 0; }
+    li.row:hover { background: var(--surface-2); }
+    .row-head {
+      position: sticky; top: 60px; z-index: 5;
+      border-radius: var(--radius) var(--radius) 0 0;
+      background: var(--surface-2); color: var(--muted);
+      font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: .04em;
+      border-bottom: 1px solid var(--border);
+    }
+    .row .r-num { text-align: right; }
+    .user { display: flex; align-items: center; gap: 12px; min-width: 0; }
+    .user .avatar { width: 40px; height: 40px; }
+    .user-name { min-width: 0; }
+    .user-name a { display: block; font-weight: 600; color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .user-name a:hover { color: var(--accent); }
+    .user-name span { display: block; color: var(--muted); font-size: 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .cell-text { color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+    .cell-text svg { display: none; }
+    .stat { color: var(--text); font-weight: 500; }
+    .stat:hover { color: var(--accent); }
+    .stat .label { display: none; }
+    .stat-strong { font-weight: 700; }
+    .joined { color: var(--muted); text-align: right; font-size: 13px; }
+
+    @media (max-width: 980px) {
+      .row { grid-template-columns: 44px minmax(180px, 2fr) minmax(0, 1.4fr) 96px 90px 72px; }
+      .row .c-company, .row .c-joined { display: none; }
+    }
+    @media (max-width: 720px) {
+      .row-head { display: none; }
+      .row {
+        grid-template-columns: auto 1fr;
+        grid-template-areas:
+          "rank user"
+          ".    meta"
+          ".    stats";
+        gap: 6px 12px; padding: 14px 16px;
+      }
+      .row .c-rank { grid-area: rank; align-self: start; margin-top: 7px; }
+      .row .c-user { grid-area: user; }
+      .row .c-meta { grid-area: meta; }
+      .row .c-stats { grid-area: stats; }
+      .row .c-location, .row .c-company { display: none; }
+      .row .c-joined { display: none; }
+    }
+    .c-meta, .c-stats { display: none; }
+    @media (max-width: 720px) {
+      .c-meta { display: flex; flex-wrap: wrap; gap: 4px 12px; color: var(--muted); font-size: 12px; min-width: 0; }
+      .c-meta span { display: inline-flex; align-items: center; gap: 4px; min-width: 0; max-width: 100%; }
+      .c-meta span b { font-weight: 400; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+      .c-meta:empty { display: none; }
+      .c-stats { display: flex; flex-wrap: wrap; gap: 6px; }
+      .c-stats a {
+        display: inline-flex; align-items: baseline; gap: 4px; padding: 2px 8px;
+        border-radius: 999px; background: var(--surface-2); border: 1px solid var(--border-soft);
+        color: var(--text); font-size: 12px; font-weight: 600;
+      }
+      .c-stats a span { color: var(--muted); font-weight: 400; }
+      .c-stats a:hover { text-decoration: none; border-color: var(--accent); }
+      .row .c-followers, .row .c-following, .row .c-repos { display: none; }
+    }
+
+    /* Repo cards */
+    .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 12px; margin: 0; padding: 0; list-style: none; }
+    @media (max-width: 400px) { .cards { grid-template-columns: 1fr; } }
+    .card {
+      display: flex; flex-direction: column; gap: 10px; min-width: 0;
+      padding: 16px; background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); box-shadow: var(--shadow);
+      transition: box-shadow .2s ease, border-color .2s ease, transform .2s ease;
+    }
+    .card:hover { box-shadow: var(--shadow-hover); border-color: color-mix(in srgb, var(--accent) 40%, var(--border)); transform: translateY(-1px); }
+    .card-head { display: flex; align-items: center; gap: 10px; min-width: 0; }
+    .card-head .avatar { width: 28px; height: 28px; border-radius: 7px; }
+    .card-title { min-width: 0; font-size: 15px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--accent); }
+    .card-title b { font-weight: 700; }
+    .card-title span { font-weight: 400; }
+    .card-desc {
+      margin: 0; color: var(--muted); flex: 1; word-break: break-word;
+      display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
+    }
+    .card-desc.none { font-style: italic; color: var(--subtle); }
+    .card-foot { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 16px; color: var(--muted); font-size: 12px; }
+    .card-foot > * { display: inline-flex; align-items: center; gap: 5px; }
+    .card-foot a { color: var(--muted); }
+    .card-foot a:hover { color: var(--accent); text-decoration: none; }
+    .lang-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--subtle); border: 1px solid rgba(127, 127, 127, .2); }
+    .today { margin-left: auto; color: var(--success); font-weight: 600; }
+
+    /* Footer */
+    .footer { margin-top: 40px; padding: 24px 0 calc(32px + env(safe-area-inset-bottom)); border-top: 1px solid var(--border); color: var(--muted); font-size: 13px; }
+    .footer .container { display: flex; flex-wrap: wrap; gap: 8px 24px; justify-content: space-between; align-items: center; }
+    .footer-links { display: flex; flex-wrap: wrap; gap: 16px; }
+    .footer-links a { color: var(--muted); }
+    .footer-links a:hover { color: var(--accent); }
+
+    .to-top {
+      position: fixed; right: 16px; bottom: calc(16px + env(safe-area-inset-bottom)); z-index: 30;
+      width: 44px; height: 44px; border-radius: 50%; box-shadow: var(--shadow-hover);
+      opacity: 0; pointer-events: none; transition: opacity .2s ease;
+    }
+    .to-top.show { opacity: 1; pointer-events: auto; }
+
+    @media (max-width: 640px) {
+      .topbar .container { height: auto; flex-wrap: wrap; row-gap: 0; padding-top: 10px; }
+      .brand { flex: 1; }
+      .nav {
+        order: 3; width: calc(100% + 32px); margin: 8px -16px 0; padding: 0 12px;
+        border-top: 1px solid var(--border-soft); gap: 0; overflow-x: auto;
+      }
+      .nav a { flex: 1; justify-content: center; border-radius: 0; padding: 10px 8px; border-bottom: 2px solid transparent; }
+      .nav a.active { background: transparent; border-bottom-color: var(--accent); }
+      .row-head { top: 104px; }
+      .hero { padding: 20px 0 14px; }
+      .search { max-width: none; margin-left: 0; flex-basis: 100%; }
+      .cards { grid-template-columns: 1fr; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      * { transition: none !important; }
     }
   </style>
-  
-  <style>
-    .list li a.language,
-    .list li span.star { height: 18px; background: var(--color-neutral-muted); display: inline-block; padding: 2px 4px; border-radius: 3px; }
-  </style>
-  
-  
-  <style>
-    .list .select .active { color: var(--color-theme-text); font-weight: bold; border-bottom: 1px dotted var(--color-border);}
-  </style>
-  
-  
-  <style>
-    .list li div.followers { font-size: 12px; color: var(--color-fg-muted); white-space:nowrap; padding-top: 2px; border-radius: 3px; }
-    .list li div.followers a { color: var(--color-fg-muted); }
-    .list li div.followers * { vertical-align: middle; }
-    .list li div.followers svg { vertical-align: text-top; display: inline-block; fill: #9E9E9E; width: 14px; height: 14px; }
-  </style>
-  
-  
-  
-  <script src="https://unpkg.com/@wcj/dark-mode"></script>
 </head>
 <body>
-  <a href="https://github.com/hunghg255/github-rank" target="_blank" class="github-corner">
-    <svg viewBox="0 0 250 250">
-      <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path>
-      <path class="octo-arm" fill="currentColor" style="transform-origin: 130px 106px;" d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2"></path>
-      <path fill="currentColor" class="octo-body" d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z"></path>
-    </svg>
-  </a>
-  <h1 class="title">
-    <dark-mode permanent></dark-mode>
-    GitHub Repositories Trending
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <symbol id="i-star" viewBox="0 0 16 16" fill="currentColor"><path d="M8 .25a.75.75 0 0 1 .673.418l1.882 3.815 4.21.612a.75.75 0 0 1 .416 1.279l-3.046 2.97.719 4.192a.751.751 0 0 1-1.088.791L8 12.347l-3.766 1.98a.75.75 0 0 1-1.088-.79l.72-4.194L.818 6.374a.75.75 0 0 1 .416-1.28l4.21-.611L7.327.668A.75.75 0 0 1 8 .25Zm0 2.445L6.615 5.5a.75.75 0 0 1-.564.41l-3.097.45 2.24 2.184a.75.75 0 0 1 .216.664l-.528 3.084 2.769-1.456a.75.75 0 0 1 .698 0l2.77 1.456-.53-3.084a.75.75 0 0 1 .216-.664l2.24-2.183-3.096-.45a.75.75 0 0 1-.564-.41L8 2.694Z"></path></symbol>
+    <symbol id="i-fork" viewBox="0 0 16 16" fill="currentColor"><path d="M5 5.372v.878c0 .414.336.75.75.75h4.5a.75.75 0 0 0 .75-.75v-.878a2.25 2.25 0 1 1 1.5 0v.878a2.25 2.25 0 0 1-2.25 2.25h-1.5v2.128a2.251 2.251 0 1 1-1.5 0V8.5h-1.5A2.25 2.25 0 0 1 3.5 6.25v-.878a2.25 2.25 0 1 1 1.5 0ZM5 3.25a.75.75 0 1 0-1.5 0 .75.75 0 0 0 1.5 0Zm6.75.75a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Zm-3 8.75a.75.75 0 1 0-1.5 0 .75.75 0 0 0 1.5 0Z"></path></symbol>
+    <symbol id="i-up" viewBox="0 0 16 16" fill="currentColor"><path d="M4.53 4.75 8 1.28l3.47 3.47a.749.749 0 0 1-.326 1.275.749.749 0 0 1-.734-.215L8.75 4.15v10.1a.75.75 0 0 1-1.5 0V4.15L5.59 5.81a.749.749 0 0 1-1.275-.326.749.749 0 0 1 .215-.734Z"></path></symbol>
+    <symbol id="i-location" viewBox="0 0 16 16" fill="currentColor"><path d="m12.596 11.596-3.535 3.536a1.5 1.5 0 0 1-2.122 0l-3.535-3.536a6.5 6.5 0 1 1 9.192-9.193 6.5 6.5 0 0 1 0 9.193Zm-1.06-8.132v-.001a5 5 0 1 0-7.072 7.072L8 14.07l3.536-3.534a5 5 0 0 0 0-7.072ZM8 9a2 2 0 1 1-.001-3.999A2 2 0 0 1 8 9Z"></path></symbol>
+    <symbol id="i-company" viewBox="0 0 16 16" fill="currentColor"><path d="M1.75 16A1.75 1.75 0 0 1 0 14.25V1.75C0 .784.784 0 1.75 0h8.5C11.216 0 12 .784 12 1.75v12.5c0 .085-.006.168-.018.25h2.268a.25.25 0 0 0 .25-.25V8.285a.25.25 0 0 0-.111-.208l-1.055-.703a.749.749 0 1 1 .832-1.248l1.055.703c.487.325.779.871.779 1.456v5.965A1.75 1.75 0 0 1 14.25 16h-3.5a.766.766 0 0 1-.197-.026c-.099.017-.2.026-.303.026h-3a.75.75 0 0 1-.75-.75V14h-1v1.25a.75.75 0 0 1-.75.75Zm-.25-1.75c0 .138.112.25.25.25H4v-1.25a.75.75 0 0 1 .75-.75h2.5a.75.75 0 0 1 .75.75v1.25h2.25a.25.25 0 0 0 .25-.25V1.75a.25.25 0 0 0-.25-.25h-8.5a.25.25 0 0 0-.25.25ZM3.75 6h.5a.75.75 0 0 1 0 1.5h-.5a.75.75 0 0 1 0-1.5ZM3 3.75A.75.75 0 0 1 3.75 3h.5a.75.75 0 0 1 0 1.5h-.5A.75.75 0 0 1 3 3.75Zm4 3A.75.75 0 0 1 7.75 6h.5a.75.75 0 0 1 0 1.5h-.5A.75.75 0 0 1 7 6.75ZM7.75 3h.5a.75.75 0 0 1 0 1.5h-.5a.75.75 0 0 1 0-1.5ZM3 9.75A.75.75 0 0 1 3.75 9h.5a.75.75 0 0 1 0 1.5h-.5A.75.75 0 0 1 3 9.75ZM7.75 9h.5a.75.75 0 0 1 0 1.5h-.5a.75.75 0 0 1 0-1.5Z"></path></symbol>
+  </svg>
+  <header class="topbar">
+    <div class="container">
+      <a class="brand" href="index.html">
+        <span class="brand-logo">
+          <svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82-.64-.18-1.32-.27-2-.27-.68 0-1.36.09-2 .27-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.31 2.69.94 0 .67.01 1.3.01 1.49 0 .21-.15.45-.55.38A7.995 7.995 0 0 1 0 8c0-4.42 3.58-8 8-8Z"></path></svg>
+        </span>
+        GitHub Rank
+      </a>
+      <nav class="nav" aria-label="Sections">
+        <a class="" href="index.html">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M2 5.5a3.5 3.5 0 1 1 5.898 2.549 5.508 5.508 0 0 1 3.034 4.084.75.75 0 1 1-1.482.235 4 4 0 0 0-7.9 0 .75.75 0 0 1-1.482-.236A5.507 5.507 0 0 1 3.102 8.05 3.493 3.493 0 0 1 2 5.5ZM11 4a3.001 3.001 0 0 1 2.22 5.018 5.01 5.01 0 0 1 2.56 3.012.749.749 0 0 1-.885.954.752.752 0 0 1-.549-.514 3.507 3.507 0 0 0-2.522-2.372.75.75 0 0 1-.574-.73v-.352a.75.75 0 0 1 .416-.672A1.5 1.5 0 0 0 11 5.5.75.75 0 0 1 11 4Zm-5.5-.5a2 2 0 1 0-.001 3.999A2 2 0 0 0 5.5 3.5Z"></path></svg>
+          Users
+        </a>
+        <a class="" href="repos.html">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M2 2.5A2.5 2.5 0 0 1 4.5 0h8.75a.75.75 0 0 1 .75.75v12.5a.75.75 0 0 1-.75.75h-2.5a.75.75 0 0 1 0-1.5h1.75v-2h-8a1 1 0 0 0-.714 1.7.75.75 0 1 1-1.072 1.05A2.495 2.495 0 0 1 2 11.5Zm10.5-1h-8a1 1 0 0 0-1 1v6.708A2.486 2.486 0 0 1 4.5 9h8ZM5 12.25a.25.25 0 0 1 .25-.25h3.5a.25.25 0 0 1 .25.25v3.25a.25.25 0 0 1-.4.2l-1.45-1.087a.249.249 0 0 0-.3 0L5.4 15.7a.25.25 0 0 1-.4-.2Z"></path></svg>
+          Repos
+        </a>
+        <a class="active" href="trending.html">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M9.533.753V.752c.217 2.385 1.463 3.626 2.653 4.81C13.37 6.74 14.498 7.863 14.498 10c0 3.459-3.369 6-6.5 6S1.5 13.459 1.5 10c0-1.315.54-2.568 1.312-3.542.38-.477.85-.907 1.336-1.215.49-.311.992-.512 1.453-.543.235-.016.453.143.476.378.08.844.305 1.425.681 1.822.354.373.866.58 1.535.63-.002-.037-.002-.074-.002-.112 0-2.42 1.022-4.498 2.53-6.078a.536.536 0 0 1 .712-.082Z"></path></svg>
+          Trending
+        </a>
+      </nav>
+      <div class="actions">
+        <button class="icon-btn theme-toggle" type="button" aria-label="Toggle dark mode" title="Toggle dark mode">
+          <svg class="sun" width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 12a4 4 0 1 1 0-8 4 4 0 0 1 0 8Zm0-1.5a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Zm5.657-8.157a.75.75 0 0 1 0 1.061l-1.061 1.06a.749.749 0 0 1-1.275-.326.749.749 0 0 1 .215-.734l1.06-1.06a.75.75 0 0 1 1.06 0Zm-9.193 9.193a.75.75 0 0 1 0 1.06l-1.06 1.061a.75.75 0 1 1-1.061-1.06l1.06-1.061a.75.75 0 0 1 1.061 0ZM8 0a.75.75 0 0 1 .75.75v1.5a.75.75 0 0 1-1.5 0V.75A.75.75 0 0 1 8 0ZM3 8a.75.75 0 0 1-.75.75H.75a.75.75 0 0 1 0-1.5h1.5A.75.75 0 0 1 3 8Zm13 0a.75.75 0 0 1-.75.75h-1.5a.75.75 0 0 1 0-1.5h1.5A.75.75 0 0 1 16 8Zm-8 5a.75.75 0 0 1 .75.75v1.5a.75.75 0 0 1-1.5 0v-1.5A.75.75 0 0 1 8 13Zm3.536-1.464a.75.75 0 0 1 1.06 0l1.061 1.06a.75.75 0 0 1-1.06 1.061l-1.061-1.06a.75.75 0 0 1 0-1.061ZM2.343 2.343a.75.75 0 0 1 1.061 0l1.06 1.061a.751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018l-1.06-1.06a.75.75 0 0 1 0-1.06Z"></path></svg>
+          <svg class="moon" width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M9.598 1.591a.749.749 0 0 1 .785-.175 7.001 7.001 0 1 1-8.967 8.967.75.75 0 0 1 .961-.96 5.5 5.5 0 0 0 7.046-7.046.75.75 0 0 1 .175-.786Zm1.616 1.945a7 7 0 0 1-7.678 7.678 5.499 5.499 0 1 0 7.678-7.678Z"></path></svg>
+        </button>
+        <a class="icon-btn" href="https://github.com/hunghg255/github-rank" target="_blank" rel="noopener" aria-label="Source on GitHub" title="Source on GitHub">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 .25a.75.75 0 0 1 .673.418l1.882 3.815 4.21.612a.75.75 0 0 1 .416 1.279l-3.046 2.97.719 4.192a.751.751 0 0 1-1.088.791L8 12.347l-3.766 1.98a.75.75 0 0 1-1.088-.79l.72-4.194L.818 6.374a.75.75 0 0 1 .416-1.28l4.21-.611L7.327.668A.75.75 0 0 1 8 .25Z"></path></svg>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="hero">
+      <h1>Trending Repositories</h1>
+      <p>Updated <time class="num">2026/09/28</time> from <a href="https://github.com/trending" target="_blank" rel="noopener">GitHub Trending</a></p>
+    </section>
+
+<div class="toolbar">
+  
+  <nav class="segmented" aria-label="Filter">
     
+    <a class="" href="trending.html">Today</a>
     
+    <a class="active" href="trending-weekly.html">This week</a>
     
-    <a target="_blank" href="https://github.com/trending">
-      <svg xmlns="http://www.w3.org/2000/svg" width="16" viewBox="0 0 16 16" version="1.1" aria-hidden="true"><path fill-rule="evenodd" fill="currentColor" d="M7.775 3.275a.75.75 0 001.06 1.06l1.25-1.25a2 2 0 112.83 2.83l-2.5 2.5a2 2 0 01-2.83 0 .75.75 0 00-1.06 1.06 3.5 3.5 0 004.95 0l2.5-2.5a3.5 3.5 0 00-4.95-4.95l-1.25 1.25zm-4.69 9.64a2 2 0 010-2.83l2.5-2.5a2 2 0 012.83 0 .75.75 0 001.06-1.06 3.5 3.5 0 00-4.95 0l-2.5 2.5a3.5 3.5 0 004.95 4.95l1.25-1.25a.75.75 0 00-1.06-1.06l-1.25 1.25a2 2 0 01-2.83 0z"></path></svg>
+    <a class="" href="trending-monthly.html">This month</a>
+    
+  </nav>
+  
+  <span class="count" id="count" aria-live="polite"></span>
+  <label class="search">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M10.68 11.74a6 6 0 0 1-7.922-8.982 6 6 0 0 1 8.982 7.922l3.04 3.04a.749.749 0 0 1-.326 1.275.749.749 0 0 1-.734-.215ZM11.5 7a4.499 4.499 0 1 0-8.997 0A4.499 4.499 0 0 0 11.5 7Z"></path></svg>
+    <input id="search" type="search" placeholder="Search repository, language…" autocomplete="off" aria-label="Search repository, language…">
+  </label>
+</div>
+
+
+<ul class="cards">
+  
+  
+<li class="card" data-search="anthropics/financial-services python">
+  <div class="card-head">
+    <span class="rank rank-1">1</span>
+    <img class="avatar" src="https://github.com/anthropics.png?size=56" width="28" height="28" loading="lazy" alt="">
+    <a class="card-title" href="https://github.com/anthropics/financial-services" target="_blank" rel="noopener" title="anthropics/financial-services"><span>anthropics /</span> <b>financial-services</b></a>
+  </div>
+  
+  <p class="card-desc none">No description provided.</p>
+  
+  <div class="card-foot">
+    
+    <a href="https://github.com/topics/python" target="_blank" rel="noopener"><span class="lang-dot" style="background-color: #3572A5"></span>Python</a>
+    
+    <a href="https://github.com/anthropics/financial-services/stargazers" target="_blank" rel="noopener" title="Stars">
+      <svg width="14" height="14" aria-hidden="true"><use href="#i-star"></use></svg>
+      <span class="num">37,876</span>
+    </a>
+    <a href="https://github.com/anthropics/financial-services/forks" target="_blank" rel="noopener" title="Forks">
+      <svg width="14" height="14" aria-hidden="true"><use href="#i-fork"></use></svg>
+      <span class="num">5,464</span>
     </a>
     
-  </h1>
-  <div class="time">Last cache created on 2025/7/27 by
+    <span class="today num" title="2606 stars this week">
+      <svg width="12" height="12" aria-hidden="true"><use href="#i-up"></use></svg>
+      2606 this week
+    </span>
     
-    
-    
-      <a href="https://github.com/trending">Github Trending</a>.
-     Create by <a href="https://github.com/hunghg255" target="_blank">hunghg255</a>.
   </div>
-  <div class="tabs">
-    <a class="" href="index.html">Users</a>
-    <a class="" href="repos.html">Repos</a>
-    <a class="active" href="trending.html">Trending</a>
-  </div>
+</li>
 
-<ul class="list repos trending">
-  <li class="rank-title">
-  <span class="select">
-    <a class="" href="trending.html">Today</a>
-    <a class="active" href="trending-weekly.html">Week</a>
-    <a class="" href="trending-monthly.html">Month</a>
-  </span>
-</li>
+
   
-    <li>
-  <div class="info">
-    <div class="rank">
-      <span title="Ranking 1">1</span>
-      <a href="https://github.com/maybe-finance/maybe" target="_blank" title="maybe-finance/maybe">maybe-finance/maybe</a>
-    </div>
-    <div class="sub-title followers">
-      
-      <a class="language" target="_blank" href="https://github.com/topics/ruby"  title="Programming Language Ruby">
-        <span style="background-color: #701516;"></span>Ruby
-      </a>
-      
-      <span class="star" title="Stargazers Count">
-        <svg aria-label="star" viewBox="0 0 14 16" version="1.1" width="14" height="16" role="img">
-          <path fill-rule="evenodd" d="M14 6l-4.9-.64L7 1 4.9 5.36 0 6l3.6 3.26L2.67 14 7 11.67 11.33 14l-.93-4.74L14 6z"></path>
-        </svg>
-        <span>52409</span>
-      </span>
-      <span class="star" title="Repo Forked">
-        <svg aria-label="repo-forked" height="16" viewBox="0 0 10 16" version="1.1" width="10" role="img">
-          <path fill-rule="evenodd" d="M8 1a1.993 1.993 0 0 0-1 3.72V6L5 8 3 6V4.72A1.993 1.993 0 0 0 2 1a1.993 1.993 0 0 0-1 3.72V6.5l3 3v1.78A1.993 1.993 0 0 0 5 15a1.993 1.993 0 0 0 1-3.72V9.5l3-3V4.72A1.993 1.993 0 0 0 8 1zM2 4.2C1.34 4.2.8 3.65.8 3c0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2 0 .65-.55 1.2-1.2 1.2zm3 10c-.66 0-1.2-.55-1.2-1.2 0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2 0 .65-.55 1.2-1.2 1.2zm3-10c-.66 0-1.2-.55-1.2-1.2 0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2 0 .65-.55 1.2-1.2 1.2z">
-        </path>
-        </svg>
-        <span>3969</span>
-      </span>
-      <span class="star">
-        <svg aria-label="star" viewBox="0 0 14 16" version="1.1" width="14" height="16" role="img">
-          <path fill-rule="evenodd" d="M14 6l-4.9-.64L7 1 4.9 5.36 0 6l3.6 3.26L2.67 14 7 11.67 11.33 14l-.93-4.74L14 6z"></path>
-        </svg>
-        <span>7255 stars this week</span>
-      </span>
-    </div>
-    <div class="details">
-      The personal finance app for everyone
-    </div>
+  
+<li class="card" data-search="paperclipai/paperclip typescript the open-source app everyone uses to manage agents at work">
+  <div class="card-head">
+    <span class="rank rank-2">2</span>
+    <img class="avatar" src="https://github.com/paperclipai.png?size=56" width="28" height="28" loading="lazy" alt="">
+    <a class="card-title" href="https://github.com/paperclipai/paperclip" target="_blank" rel="noopener" title="paperclipai/paperclip"><span>paperclipai /</span> <b>paperclip</b></a>
+  </div>
+  
+  <p class="card-desc">The open-source app everyone uses to manage agents at work</p>
+  
+  <div class="card-foot">
+    
+    <a href="https://github.com/topics/typescript" target="_blank" rel="noopener"><span class="lang-dot" style="background-color: #3178c6"></span>TypeScript</a>
+    
+    <a href="https://github.com/paperclipai/paperclip/stargazers" target="_blank" rel="noopener" title="Stars">
+      <svg width="14" height="14" aria-hidden="true"><use href="#i-star"></use></svg>
+      <span class="num">90,159</span>
+    </a>
+    <a href="https://github.com/paperclipai/paperclip/forks" target="_blank" rel="noopener" title="Forks">
+      <svg width="14" height="14" aria-hidden="true"><use href="#i-fork"></use></svg>
+      <span class="num">15,689</span>
+    </a>
+    
+    <span class="today num" title="7364 stars this week">
+      <svg width="12" height="12" aria-hidden="true"><use href="#i-up"></use></svg>
+      7364 this week
+    </span>
+    
   </div>
 </li>
+
+
   
-    <li>
-  <div class="info">
-    <div class="rank">
-      <span title="Ranking 2">2</span>
-      <a href="https://github.com/OpenBB-finance/OpenBB" target="_blank" title="OpenBB-finance/OpenBB">OpenBB-finance/OpenBB</a>
-    </div>
-    <div class="sub-title followers">
-      
-      <a class="language" target="_blank" href="https://github.com/topics/python"  title="Programming Language Python">
-        <span style="background-color: #3572A5;"></span>Python
-      </a>
-      
-      <span class="star" title="Stargazers Count">
-        <svg aria-label="star" viewBox="0 0 14 16" version="1.1" width="14" height="16" role="img">
-          <path fill-rule="evenodd" d="M14 6l-4.9-.64L7 1 4.9 5.36 0 6l3.6 3.26L2.67 14 7 11.67 11.33 14l-.93-4.74L14 6z"></path>
-        </svg>
-        <span>46317</span>
-      </span>
-      <span class="star" title="Repo Forked">
-        <svg aria-label="repo-forked" height="16" viewBox="0 0 10 16" version="1.1" width="10" role="img">
-          <path fill-rule="evenodd" d="M8 1a1.993 1.993 0 0 0-1 3.72V6L5 8 3 6V4.72A1.993 1.993 0 0 0 2 1a1.993 1.993 0 0 0-1 3.72V6.5l3 3v1.78A1.993 1.993 0 0 0 5 15a1.993 1.993 0 0 0 1-3.72V9.5l3-3V4.72A1.993 1.993 0 0 0 8 1zM2 4.2C1.34 4.2.8 3.65.8 3c0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2 0 .65-.55 1.2-1.2 1.2zm3 10c-.66 0-1.2-.55-1.2-1.2 0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2 0 .65-.55 1.2-1.2 1.2zm3-10c-.66 0-1.2-.55-1.2-1.2 0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2 0 .65-.55 1.2-1.2 1.2z">
-        </path>
-        </svg>
-        <span>4201</span>
-      </span>
-      <span class="star">
-        <svg aria-label="star" viewBox="0 0 14 16" version="1.1" width="14" height="16" role="img">
-          <path fill-rule="evenodd" d="M14 6l-4.9-.64L7 1 4.9 5.36 0 6l3.6 3.26L2.67 14 7 11.67 11.33 14l-.93-4.74L14 6z"></path>
-        </svg>
-        <span>3114 stars this week</span>
-      </span>
-    </div>
-    <div class="details">
-      Investment Research for Everyone, Everywhere.
-    </div>
+  
+<li class="card" data-search="vectorize-io/hindsight python hindsight: agent memory that learns">
+  <div class="card-head">
+    <span class="rank rank-3">3</span>
+    <img class="avatar" src="https://github.com/vectorize-io.png?size=56" width="28" height="28" loading="lazy" alt="">
+    <a class="card-title" href="https://github.com/vectorize-io/hindsight" target="_blank" rel="noopener" title="vectorize-io/hindsight"><span>vectorize-io /</span> <b>hindsight</b></a>
+  </div>
+  
+  <p class="card-desc">Hindsight: Agent Memory That Learns</p>
+  
+  <div class="card-foot">
+    
+    <a href="https://github.com/topics/python" target="_blank" rel="noopener"><span class="lang-dot" style="background-color: #3572A5"></span>Python</a>
+    
+    <a href="https://github.com/vectorize-io/hindsight/stargazers" target="_blank" rel="noopener" title="Stars">
+      <svg width="14" height="14" aria-hidden="true"><use href="#i-star"></use></svg>
+      <span class="num">37,571</span>
+    </a>
+    <a href="https://github.com/vectorize-io/hindsight/forks" target="_blank" rel="noopener" title="Forks">
+      <svg width="14" height="14" aria-hidden="true"><use href="#i-fork"></use></svg>
+      <span class="num">4,862</span>
+    </a>
+    
+    <span class="today num" title="11089 stars this week">
+      <svg width="12" height="12" aria-hidden="true"><use href="#i-up"></use></svg>
+      11089 this week
+    </span>
+    
   </div>
 </li>
+
+
   
-    <li>
-  <div class="info">
-    <div class="rank">
-      <span title="Ranking 3">3</span>
-      <a href="https://github.com/langchain-ai/open_deep_research" target="_blank" title="langchain-ai/open_deep_research">langchain-ai/open_deep_research</a>
-    </div>
-    <div class="sub-title followers">
-      
-      <a class="language" target="_blank" href="https://github.com/topics/python"  title="Programming Language Python">
-        <span style="background-color: #3572A5;"></span>Python
-      </a>
-      
-      <span class="star" title="Stargazers Count">
-        <svg aria-label="star" viewBox="0 0 14 16" version="1.1" width="14" height="16" role="img">
-          <path fill-rule="evenodd" d="M14 6l-4.9-.64L7 1 4.9 5.36 0 6l3.6 3.26L2.67 14 7 11.67 11.33 14l-.93-4.74L14 6z"></path>
-        </svg>
-        <span>6353</span>
-      </span>
-      <span class="star" title="Repo Forked">
-        <svg aria-label="repo-forked" height="16" viewBox="0 0 10 16" version="1.1" width="10" role="img">
-          <path fill-rule="evenodd" d="M8 1a1.993 1.993 0 0 0-1 3.72V6L5 8 3 6V4.72A1.993 1.993 0 0 0 2 1a1.993 1.993 0 0 0-1 3.72V6.5l3 3v1.78A1.993 1.993 0 0 0 5 15a1.993 1.993 0 0 0 1-3.72V9.5l3-3V4.72A1.993 1.993 0 0 0 8 1zM2 4.2C1.34 4.2.8 3.65.8 3c0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2 0 .65-.55 1.2-1.2 1.2zm3 10c-.66 0-1.2-.55-1.2-1.2 0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2 0 .65-.55 1.2-1.2 1.2zm3-10c-.66 0-1.2-.55-1.2-1.2 0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2 0 .65-.55 1.2-1.2 1.2z">
-        </path>
-        </svg>
-        <span>859</span>
-      </span>
-      <span class="star">
-        <svg aria-label="star" viewBox="0 0 14 16" version="1.1" width="14" height="16" role="img">
-          <path fill-rule="evenodd" d="M14 6l-4.9-.64L7 1 4.9 5.36 0 6l3.6 3.26L2.67 14 7 11.67 11.33 14l-.93-4.74L14 6z"></path>
-        </svg>
-        <span>1155 stars this week</span>
-      </span>
-    </div>
-    <div class="details">
-      
-    </div>
+  
+<li class="card" data-search="cloudflare/security-audit-skill javascript a coding-agent skill for multi-phase security audits with independently verified, machine-readable findings">
+  <div class="card-head">
+    <span class="rank rank-4">4</span>
+    <img class="avatar" src="https://github.com/cloudflare.png?size=56" width="28" height="28" loading="lazy" alt="">
+    <a class="card-title" href="https://github.com/cloudflare/security-audit-skill" target="_blank" rel="noopener" title="cloudflare/security-audit-skill"><span>cloudflare /</span> <b>security-audit-skill</b></a>
+  </div>
+  
+  <p class="card-desc">A coding-agent skill for multi-phase security audits with independently verified, machine-readable findings</p>
+  
+  <div class="card-foot">
+    
+    <a href="https://github.com/topics/javascript" target="_blank" rel="noopener"><span class="lang-dot" style="background-color: #f1e05a"></span>JavaScript</a>
+    
+    <a href="https://github.com/cloudflare/security-audit-skill/stargazers" target="_blank" rel="noopener" title="Stars">
+      <svg width="14" height="14" aria-hidden="true"><use href="#i-star"></use></svg>
+      <span class="num">22,368</span>
+    </a>
+    <a href="https://github.com/cloudflare/security-audit-skill/forks" target="_blank" rel="noopener" title="Forks">
+      <svg width="14" height="14" aria-hidden="true"><use href="#i-fork"></use></svg>
+      <span class="num">1,300</span>
+    </a>
+    
+    <span class="today num" title="4805 stars this week">
+      <svg width="12" height="12" aria-hidden="true"><use href="#i-up"></use></svg>
+      4805 this week
+    </span>
+    
   </div>
 </li>
+
+
   
-    <li>
-  <div class="info">
-    <div class="rank">
-      <span title="Ranking 4">4</span>
-      <a href="https://github.com/tracel-ai/burn" target="_blank" title="tracel-ai/burn">tracel-ai/burn</a>
-    </div>
-    <div class="sub-title followers">
-      
-      <a class="language" target="_blank" href="https://github.com/topics/rust"  title="Programming Language Rust">
-        <span style="background-color: #dea584;"></span>Rust
-      </a>
-      
-      <span class="star" title="Stargazers Count">
-        <svg aria-label="star" viewBox="0 0 14 16" version="1.1" width="14" height="16" role="img">
-          <path fill-rule="evenodd" d="M14 6l-4.9-.64L7 1 4.9 5.36 0 6l3.6 3.26L2.67 14 7 11.67 11.33 14l-.93-4.74L14 6z"></path>
-        </svg>
-        <span>12268</span>
-      </span>
-      <span class="star" title="Repo Forked">
-        <svg aria-label="repo-forked" height="16" viewBox="0 0 10 16" version="1.1" width="10" role="img">
-          <path fill-rule="evenodd" d="M8 1a1.993 1.993 0 0 0-1 3.72V6L5 8 3 6V4.72A1.993 1.993 0 0 0 2 1a1.993 1.993 0 0 0-1 3.72V6.5l3 3v1.78A1.993 1.993 0 0 0 5 15a1.993 1.993 0 0 0 1-3.72V9.5l3-3V4.72A1.993 1.993 0 0 0 8 1zM2 4.2C1.34 4.2.8 3.65.8 3c0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2 0 .65-.55 1.2-1.2 1.2zm3 10c-.66 0-1.2-.55-1.2-1.2 0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2 0 .65-.55 1.2-1.2 1.2zm3-10c-.66 0-1.2-.55-1.2-1.2 0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2 0 .65-.55 1.2-1.2 1.2z">
-        </path>
-        </svg>
-        <span>645</span>
-      </span>
-      <span class="star">
-        <svg aria-label="star" viewBox="0 0 14 16" version="1.1" width="14" height="16" role="img">
-          <path fill-rule="evenodd" d="M14 6l-4.9-.64L7 1 4.9 5.36 0 6l3.6 3.26L2.67 14 7 11.67 11.33 14l-.93-4.74L14 6z"></path>
-        </svg>
-        <span>609 stars this week</span>
-      </span>
-    </div>
-    <div class="details">
-      Burn is a next generation Deep Learning Framework that doesn&#39;t compromise on flexibility, efficiency and portability.
-    </div>
+  
+<li class="card" data-search="tencent/weknora go open-source llm knowledge platform: turn raw documents into a queryable rag, an autonomous reasoning agent, and a self-maintaining wiki.">
+  <div class="card-head">
+    <span class="rank rank-5">5</span>
+    <img class="avatar" src="https://github.com/Tencent.png?size=56" width="28" height="28" loading="lazy" alt="">
+    <a class="card-title" href="https://github.com/Tencent/WeKnora" target="_blank" rel="noopener" title="Tencent/WeKnora"><span>Tencent /</span> <b>WeKnora</b></a>
+  </div>
+  
+  <p class="card-desc">Open-source LLM knowledge platform: turn raw documents into a queryable RAG, an autonomous reasoning agent, and a self-maintaining Wiki.</p>
+  
+  <div class="card-foot">
+    
+    <a href="https://github.com/topics/go" target="_blank" rel="noopener"><span class="lang-dot" style="background-color: #00ADD8"></span>Go</a>
+    
+    <a href="https://github.com/Tencent/WeKnora/stargazers" target="_blank" rel="noopener" title="Stars">
+      <svg width="14" height="14" aria-hidden="true"><use href="#i-star"></use></svg>
+      <span class="num">30,653</span>
+    </a>
+    <a href="https://github.com/Tencent/WeKnora/forks" target="_blank" rel="noopener" title="Forks">
+      <svg width="14" height="14" aria-hidden="true"><use href="#i-fork"></use></svg>
+      <span class="num">4,102</span>
+    </a>
+    
+    <span class="today num" title="2705 stars this week">
+      <svg width="12" height="12" aria-hidden="true"><use href="#i-up"></use></svg>
+      2705 this week
+    </span>
+    
   </div>
 </li>
+
+
   
-    <li>
-  <div class="info">
-    <div class="rank">
-      <span title="Ranking 5">5</span>
-      <a href="https://github.com/frappe/hrms" target="_blank" title="frappe/hrms">frappe/hrms</a>
-    </div>
-    <div class="sub-title followers">
-      
-      <a class="language" target="_blank" href="https://github.com/topics/python"  title="Programming Language Python">
-        <span style="background-color: #3572A5;"></span>Python
-      </a>
-      
-      <span class="star" title="Stargazers Count">
-        <svg aria-label="star" viewBox="0 0 14 16" version="1.1" width="14" height="16" role="img">
-          <path fill-rule="evenodd" d="M14 6l-4.9-.64L7 1 4.9 5.36 0 6l3.6 3.26L2.67 14 7 11.67 11.33 14l-.93-4.74L14 6z"></path>
-        </svg>
-        <span>4596</span>
-      </span>
-      <span class="star" title="Repo Forked">
-        <svg aria-label="repo-forked" height="16" viewBox="0 0 10 16" version="1.1" width="10" role="img">
-          <path fill-rule="evenodd" d="M8 1a1.993 1.993 0 0 0-1 3.72V6L5 8 3 6V4.72A1.993 1.993 0 0 0 2 1a1.993 1.993 0 0 0-1 3.72V6.5l3 3v1.78A1.993 1.993 0 0 0 5 15a1.993 1.993 0 0 0 1-3.72V9.5l3-3V4.72A1.993 1.993 0 0 0 8 1zM2 4.2C1.34 4.2.8 3.65.8 3c0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2 0 .65-.55 1.2-1.2 1.2zm3 10c-.66 0-1.2-.55-1.2-1.2 0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2 0 .65-.55 1.2-1.2 1.2zm3-10c-.66 0-1.2-.55-1.2-1.2 0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2 0 .65-.55 1.2-1.2 1.2z">
-        </path>
-        </svg>
-        <span>1383</span>
-      </span>
-      <span class="star">
-        <svg aria-label="star" viewBox="0 0 14 16" version="1.1" width="14" height="16" role="img">
-          <path fill-rule="evenodd" d="M14 6l-4.9-.64L7 1 4.9 5.36 0 6l3.6 3.26L2.67 14 7 11.67 11.33 14l-.93-4.74L14 6z"></path>
-        </svg>
-        <span>1715 stars this week</span>
-      </span>
-    </div>
-    <div class="details">
-      Open Source HR and Payroll Software
-    </div>
+  
+<li class="card" data-search="davila7/claude-code-templates python cli tool for configuring and monitoring claude code">
+  <div class="card-head">
+    <span class="rank rank-6">6</span>
+    <img class="avatar" src="https://github.com/davila7.png?size=56" width="28" height="28" loading="lazy" alt="">
+    <a class="card-title" href="https://github.com/davila7/claude-code-templates" target="_blank" rel="noopener" title="davila7/claude-code-templates"><span>davila7 /</span> <b>claude-code-templates</b></a>
+  </div>
+  
+  <p class="card-desc">CLI tool for configuring and monitoring Claude Code</p>
+  
+  <div class="card-foot">
+    
+    <a href="https://github.com/topics/python" target="_blank" rel="noopener"><span class="lang-dot" style="background-color: #3572A5"></span>Python</a>
+    
+    <a href="https://github.com/davila7/claude-code-templates/stargazers" target="_blank" rel="noopener" title="Stars">
+      <svg width="14" height="14" aria-hidden="true"><use href="#i-star"></use></svg>
+      <span class="num">31,993</span>
+    </a>
+    <a href="https://github.com/davila7/claude-code-templates/forks" target="_blank" rel="noopener" title="Forks">
+      <svg width="14" height="14" aria-hidden="true"><use href="#i-fork"></use></svg>
+      <span class="num">3,644</span>
+    </a>
+    
+    <span class="today num" title="1154 stars this week">
+      <svg width="12" height="12" aria-hidden="true"><use href="#i-up"></use></svg>
+      1154 this week
+    </span>
+    
   </div>
 </li>
+
+
   
-    <li>
-  <div class="info">
-    <div class="rank">
-      <span title="Ranking 6">6</span>
-      <a href="https://github.com/hyprwm/Hyprland" target="_blank" title="hyprwm/Hyprland">hyprwm/Hyprland</a>
-    </div>
-    <div class="sub-title followers">
-      
-      <a class="language" target="_blank" href="https://github.com/topics/c++"  title="Programming Language C++">
-        <span style="background-color: #f34b7d;"></span>C++
-      </a>
-      
-      <span class="star" title="Stargazers Count">
-        <svg aria-label="star" viewBox="0 0 14 16" version="1.1" width="14" height="16" role="img">
-          <path fill-rule="evenodd" d="M14 6l-4.9-.64L7 1 4.9 5.36 0 6l3.6 3.26L2.67 14 7 11.67 11.33 14l-.93-4.74L14 6z"></path>
-        </svg>
-        <span>28773</span>
-      </span>
-      <span class="star" title="Repo Forked">
-        <svg aria-label="repo-forked" height="16" viewBox="0 0 10 16" version="1.1" width="10" role="img">
-          <path fill-rule="evenodd" d="M8 1a1.993 1.993 0 0 0-1 3.72V6L5 8 3 6V4.72A1.993 1.993 0 0 0 2 1a1.993 1.993 0 0 0-1 3.72V6.5l3 3v1.78A1.993 1.993 0 0 0 5 15a1.993 1.993 0 0 0 1-3.72V9.5l3-3V4.72A1.993 1.993 0 0 0 8 1zM2 4.2C1.34 4.2.8 3.65.8 3c0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2 0 .65-.55 1.2-1.2 1.2zm3 10c-.66 0-1.2-.55-1.2-1.2 0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2 0 .65-.55 1.2-1.2 1.2zm3-10c-.66 0-1.2-.55-1.2-1.2 0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2 0 .65-.55 1.2-1.2 1.2z">
-        </path>
-        </svg>
-        <span>1216</span>
-      </span>
-      <span class="star">
-        <svg aria-label="star" viewBox="0 0 14 16" version="1.1" width="14" height="16" role="img">
-          <path fill-rule="evenodd" d="M14 6l-4.9-.64L7 1 4.9 5.36 0 6l3.6 3.26L2.67 14 7 11.67 11.33 14l-.93-4.74L14 6z"></path>
-        </svg>
-        <span>1426 stars this week</span>
-      </span>
-    </div>
-    <div class="details">
-      Hyprland is an independent, highly customizable, dynamic tiling Wayland compositor that doesn&#39;t sacrifice on its looks.
-    </div>
+  
+<li class="card" data-search="stablyai/orca typescript orca is the ade for working with a fleet of parallel agents. run any coding agent with your own subscription. available on desktop, mobile and remote runtime.">
+  <div class="card-head">
+    <span class="rank rank-7">7</span>
+    <img class="avatar" src="https://github.com/stablyai.png?size=56" width="28" height="28" loading="lazy" alt="">
+    <a class="card-title" href="https://github.com/stablyai/orca" target="_blank" rel="noopener" title="stablyai/orca"><span>stablyai /</span> <b>orca</b></a>
+  </div>
+  
+  <p class="card-desc">Orca is the ADE for working with a fleet of parallel agents. Run any coding agent with your own subscription. Available on desktop, mobile and remote runtime.</p>
+  
+  <div class="card-foot">
+    
+    <a href="https://github.com/topics/typescript" target="_blank" rel="noopener"><span class="lang-dot" style="background-color: #3178c6"></span>TypeScript</a>
+    
+    <a href="https://github.com/stablyai/orca/stargazers" target="_blank" rel="noopener" title="Stars">
+      <svg width="14" height="14" aria-hidden="true"><use href="#i-star"></use></svg>
+      <span class="num">79,727</span>
+    </a>
+    <a href="https://github.com/stablyai/orca/forks" target="_blank" rel="noopener" title="Forks">
+      <svg width="14" height="14" aria-hidden="true"><use href="#i-fork"></use></svg>
+      <span class="num">5,210</span>
+    </a>
+    
+    <span class="today num" title="6227 stars this week">
+      <svg width="12" height="12" aria-hidden="true"><use href="#i-up"></use></svg>
+      6227 this week
+    </span>
+    
   </div>
 </li>
+
+
   
-    <li>
-  <div class="info">
-    <div class="rank">
-      <span title="Ranking 7">7</span>
-      <a href="https://github.com/donnemartin/system-design-primer" target="_blank" title="donnemartin/system-design-primer">donnemartin/system-design-primer</a>
-    </div>
-    <div class="sub-title followers">
-      
-      <a class="language" target="_blank" href="https://github.com/topics/python"  title="Programming Language Python">
-        <span style="background-color: #3572A5;"></span>Python
-      </a>
-      
-      <span class="star" title="Stargazers Count">
-        <svg aria-label="star" viewBox="0 0 14 16" version="1.1" width="14" height="16" role="img">
-          <path fill-rule="evenodd" d="M14 6l-4.9-.64L7 1 4.9 5.36 0 6l3.6 3.26L2.67 14 7 11.67 11.33 14l-.93-4.74L14 6z"></path>
-        </svg>
-        <span>313128</span>
-      </span>
-      <span class="star" title="Repo Forked">
-        <svg aria-label="repo-forked" height="16" viewBox="0 0 10 16" version="1.1" width="10" role="img">
-          <path fill-rule="evenodd" d="M8 1a1.993 1.993 0 0 0-1 3.72V6L5 8 3 6V4.72A1.993 1.993 0 0 0 2 1a1.993 1.993 0 0 0-1 3.72V6.5l3 3v1.78A1.993 1.993 0 0 0 5 15a1.993 1.993 0 0 0 1-3.72V9.5l3-3V4.72A1.993 1.993 0 0 0 8 1zM2 4.2C1.34 4.2.8 3.65.8 3c0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2 0 .65-.55 1.2-1.2 1.2zm3 10c-.66 0-1.2-.55-1.2-1.2 0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2 0 .65-.55 1.2-1.2 1.2zm3-10c-.66 0-1.2-.55-1.2-1.2 0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2 0 .65-.55 1.2-1.2 1.2z">
-        </path>
-        </svg>
-        <span>51444</span>
-      </span>
-      <span class="star">
-        <svg aria-label="star" viewBox="0 0 14 16" version="1.1" width="14" height="16" role="img">
-          <path fill-rule="evenodd" d="M14 6l-4.9-.64L7 1 4.9 5.36 0 6l3.6 3.26L2.67 14 7 11.67 11.33 14l-.93-4.74L14 6z"></path>
-        </svg>
-        <span>1480 stars this week</span>
-      </span>
-    </div>
-    <div class="details">
-      Learn how to design large-scale systems. Prep for the system design interview. Includes Anki flashcards.
-    </div>
+  
+<li class="card" data-search="vercel/next.js javascript the react framework">
+  <div class="card-head">
+    <span class="rank rank-8">8</span>
+    <img class="avatar" src="https://github.com/vercel.png?size=56" width="28" height="28" loading="lazy" alt="">
+    <a class="card-title" href="https://github.com/vercel/next.js" target="_blank" rel="noopener" title="vercel/next.js"><span>vercel /</span> <b>next.js</b></a>
+  </div>
+  
+  <p class="card-desc">The React Framework</p>
+  
+  <div class="card-foot">
+    
+    <a href="https://github.com/topics/javascript" target="_blank" rel="noopener"><span class="lang-dot" style="background-color: #f1e05a"></span>JavaScript</a>
+    
+    <a href="https://github.com/vercel/next.js/stargazers" target="_blank" rel="noopener" title="Stars">
+      <svg width="14" height="14" aria-hidden="true"><use href="#i-star"></use></svg>
+      <span class="num">142,807</span>
+    </a>
+    <a href="https://github.com/vercel/next.js/forks" target="_blank" rel="noopener" title="Forks">
+      <svg width="14" height="14" aria-hidden="true"><use href="#i-fork"></use></svg>
+      <span class="num">33,313</span>
+    </a>
+    
+    <span class="today num" title="496 stars this week">
+      <svg width="12" height="12" aria-hidden="true"><use href="#i-up"></use></svg>
+      496 this week
+    </span>
+    
   </div>
 </li>
+
+
   
-    <li>
-  <div class="info">
-    <div class="rank">
-      <span title="Ranking 8">8</span>
-      <a href="https://github.com/microsoft/ai-agents-for-beginners" target="_blank" title="microsoft/ai-agents-for-beginners">microsoft/ai-agents-for-beginners</a>
-    </div>
-    <div class="sub-title followers">
-      
-      <a class="language" target="_blank" href="https://github.com/topics/jupyternotebook"  title="Programming Language JupyterNotebook">
-        <span style="background-color: #DA5B0B;"></span>JupyterNotebook
-      </a>
-      
-      <span class="star" title="Stargazers Count">
-        <svg aria-label="star" viewBox="0 0 14 16" version="1.1" width="14" height="16" role="img">
-          <path fill-rule="evenodd" d="M14 6l-4.9-.64L7 1 4.9 5.36 0 6l3.6 3.26L2.67 14 7 11.67 11.33 14l-.93-4.74L14 6z"></path>
-        </svg>
-        <span>32684</span>
-      </span>
-      <span class="star" title="Repo Forked">
-        <svg aria-label="repo-forked" height="16" viewBox="0 0 10 16" version="1.1" width="10" role="img">
-          <path fill-rule="evenodd" d="M8 1a1.993 1.993 0 0 0-1 3.72V6L5 8 3 6V4.72A1.993 1.993 0 0 0 2 1a1.993 1.993 0 0 0-1 3.72V6.5l3 3v1.78A1.993 1.993 0 0 0 5 15a1.993 1.993 0 0 0 1-3.72V9.5l3-3V4.72A1.993 1.993 0 0 0 8 1zM2 4.2C1.34 4.2.8 3.65.8 3c0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2 0 .65-.55 1.2-1.2 1.2zm3 10c-.66 0-1.2-.55-1.2-1.2 0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2 0 .65-.55 1.2-1.2 1.2zm3-10c-.66 0-1.2-.55-1.2-1.2 0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2 0 .65-.55 1.2-1.2 1.2z">
-        </path>
-        </svg>
-        <span>9603</span>
-      </span>
-      <span class="star">
-        <svg aria-label="star" viewBox="0 0 14 16" version="1.1" width="14" height="16" role="img">
-          <path fill-rule="evenodd" d="M14 6l-4.9-.64L7 1 4.9 5.36 0 6l3.6 3.26L2.67 14 7 11.67 11.33 14l-.93-4.74L14 6z"></path>
-        </svg>
-        <span>1699 stars this week</span>
-      </span>
-    </div>
-    <div class="details">
-      11 Lessons to Get Started Building AI Agents
-    </div>
+  
+<li class="card" data-search="hkuds/cli-anything python &#34;cli-anything: making all software agent-native&#34; -- cli-hub: https://clianything.cc/">
+  <div class="card-head">
+    <span class="rank rank-9">9</span>
+    <img class="avatar" src="https://github.com/HKUDS.png?size=56" width="28" height="28" loading="lazy" alt="">
+    <a class="card-title" href="https://github.com/HKUDS/CLI-Anything" target="_blank" rel="noopener" title="HKUDS/CLI-Anything"><span>HKUDS /</span> <b>CLI-Anything</b></a>
+  </div>
+  
+  <p class="card-desc">&#34;CLI-Anything: Making ALL Software Agent-Native&#34; -- CLI-Hub: https://clianything.cc/</p>
+  
+  <div class="card-foot">
+    
+    <a href="https://github.com/topics/python" target="_blank" rel="noopener"><span class="lang-dot" style="background-color: #3572A5"></span>Python</a>
+    
+    <a href="https://github.com/HKUDS/CLI-Anything/stargazers" target="_blank" rel="noopener" title="Stars">
+      <svg width="14" height="14" aria-hidden="true"><use href="#i-star"></use></svg>
+      <span class="num">50,765</span>
+    </a>
+    <a href="https://github.com/HKUDS/CLI-Anything/forks" target="_blank" rel="noopener" title="Forks">
+      <svg width="14" height="14" aria-hidden="true"><use href="#i-fork"></use></svg>
+      <span class="num">4,639</span>
+    </a>
+    
+    <span class="today num" title="1105 stars this week">
+      <svg width="12" height="12" aria-hidden="true"><use href="#i-up"></use></svg>
+      1105 this week
+    </span>
+    
   </div>
 </li>
+
+
   
-    <li>
-  <div class="info">
-    <div class="rank">
-      <span title="Ranking 9">9</span>
-      <a href="https://github.com/hesreallyhim/awesome-claude-code" target="_blank" title="hesreallyhim/awesome-claude-code">hesreallyhim/awesome-claude-code</a>
-    </div>
-    <div class="sub-title followers">
-      
-      <a class="language" target="_blank" href="https://github.com/topics/python"  title="Programming Language Python">
-        <span style="background-color: #3572A5;"></span>Python
-      </a>
-      
-      <span class="star" title="Stargazers Count">
-        <svg aria-label="star" viewBox="0 0 14 16" version="1.1" width="14" height="16" role="img">
-          <path fill-rule="evenodd" d="M14 6l-4.9-.64L7 1 4.9 5.36 0 6l3.6 3.26L2.67 14 7 11.67 11.33 14l-.93-4.74L14 6z"></path>
-        </svg>
-        <span>6837</span>
-      </span>
-      <span class="star" title="Repo Forked">
-        <svg aria-label="repo-forked" height="16" viewBox="0 0 10 16" version="1.1" width="10" role="img">
-          <path fill-rule="evenodd" d="M8 1a1.993 1.993 0 0 0-1 3.72V6L5 8 3 6V4.72A1.993 1.993 0 0 0 2 1a1.993 1.993 0 0 0-1 3.72V6.5l3 3v1.78A1.993 1.993 0 0 0 5 15a1.993 1.993 0 0 0 1-3.72V9.5l3-3V4.72A1.993 1.993 0 0 0 8 1zM2 4.2C1.34 4.2.8 3.65.8 3c0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2 0 .65-.55 1.2-1.2 1.2zm3 10c-.66 0-1.2-.55-1.2-1.2 0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2 0 .65-.55 1.2-1.2 1.2zm3-10c-.66 0-1.2-.55-1.2-1.2 0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2 0 .65-.55 1.2-1.2 1.2z">
-        </path>
-        </svg>
-        <span>343</span>
-      </span>
-      <span class="star">
-        <svg aria-label="star" viewBox="0 0 14 16" version="1.1" width="14" height="16" role="img">
-          <path fill-rule="evenodd" d="M14 6l-4.9-.64L7 1 4.9 5.36 0 6l3.6 3.26L2.67 14 7 11.67 11.33 14l-.93-4.74L14 6z"></path>
-        </svg>
-        <span>2434 stars this week</span>
-      </span>
-    </div>
-    <div class="details">
-      A curated list of awesome commands, files, and workflows for Claude Code
-    </div>
+  
+<li class="card" data-search="pytorch/pytorch python tensors and dynamic neural networks in python with strong gpu acceleration">
+  <div class="card-head">
+    <span class="rank rank-10">10</span>
+    <img class="avatar" src="https://github.com/pytorch.png?size=56" width="28" height="28" loading="lazy" alt="">
+    <a class="card-title" href="https://github.com/pytorch/pytorch" target="_blank" rel="noopener" title="pytorch/pytorch"><span>pytorch /</span> <b>pytorch</b></a>
+  </div>
+  
+  <p class="card-desc">Tensors and Dynamic neural networks in Python with strong GPU acceleration</p>
+  
+  <div class="card-foot">
+    
+    <a href="https://github.com/topics/python" target="_blank" rel="noopener"><span class="lang-dot" style="background-color: #3572A5"></span>Python</a>
+    
+    <a href="https://github.com/pytorch/pytorch/stargazers" target="_blank" rel="noopener" title="Stars">
+      <svg width="14" height="14" aria-hidden="true"><use href="#i-star"></use></svg>
+      <span class="num">103,426</span>
+    </a>
+    <a href="https://github.com/pytorch/pytorch/forks" target="_blank" rel="noopener" title="Forks">
+      <svg width="14" height="14" aria-hidden="true"><use href="#i-fork"></use></svg>
+      <span class="num">30,786</span>
+    </a>
+    
+    <span class="today num" title="320 stars this week">
+      <svg width="12" height="12" aria-hidden="true"><use href="#i-up"></use></svg>
+      320 this week
+    </span>
+    
   </div>
 </li>
+
+
   
-    <li>
-  <div class="info">
-    <div class="rank">
-      <span title="Ranking 10">10</span>
-      <a href="https://github.com/BerriAI/litellm" target="_blank" title="BerriAI/litellm">BerriAI/litellm</a>
-    </div>
-    <div class="sub-title followers">
-      
-      <a class="language" target="_blank" href="https://github.com/topics/python"  title="Programming Language Python">
-        <span style="background-color: #3572A5;"></span>Python
-      </a>
-      
-      <span class="star" title="Stargazers Count">
-        <svg aria-label="star" viewBox="0 0 14 16" version="1.1" width="14" height="16" role="img">
-          <path fill-rule="evenodd" d="M14 6l-4.9-.64L7 1 4.9 5.36 0 6l3.6 3.26L2.67 14 7 11.67 11.33 14l-.93-4.74L14 6z"></path>
-        </svg>
-        <span>26241</span>
-      </span>
-      <span class="star" title="Repo Forked">
-        <svg aria-label="repo-forked" height="16" viewBox="0 0 10 16" version="1.1" width="10" role="img">
-          <path fill-rule="evenodd" d="M8 1a1.993 1.993 0 0 0-1 3.72V6L5 8 3 6V4.72A1.993 1.993 0 0 0 2 1a1.993 1.993 0 0 0-1 3.72V6.5l3 3v1.78A1.993 1.993 0 0 0 5 15a1.993 1.993 0 0 0 1-3.72V9.5l3-3V4.72A1.993 1.993 0 0 0 8 1zM2 4.2C1.34 4.2.8 3.65.8 3c0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2 0 .65-.55 1.2-1.2 1.2zm3 10c-.66 0-1.2-.55-1.2-1.2 0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2 0 .65-.55 1.2-1.2 1.2zm3-10c-.66 0-1.2-.55-1.2-1.2 0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2 0 .65-.55 1.2-1.2 1.2z">
-        </path>
-        </svg>
-        <span>3618</span>
-      </span>
-      <span class="star">
-        <svg aria-label="star" viewBox="0 0 14 16" version="1.1" width="14" height="16" role="img">
-          <path fill-rule="evenodd" d="M14 6l-4.9-.64L7 1 4.9 5.36 0 6l3.6 3.26L2.67 14 7 11.67 11.33 14l-.93-4.74L14 6z"></path>
-        </svg>
-        <span>576 stars this week</span>
-      </span>
-    </div>
-    <div class="details">
-      Python SDK, Proxy Server (LLM Gateway) to call 100+ LLM APIs in OpenAI format - [Bedrock, Azure, OpenAI, VertexAI, Cohere, Anthropic, Sagemaker, HuggingFace, Replicate, Groq]
-    </div>
+  
+<li class="card" data-search="anthropics/claude-code typescript claude code is an agentic coding tool that lives in your terminal, understands your codebase, and helps you code faster by executing routine tasks, explaining complex code, and handling git workflows - all through natural language commands.">
+  <div class="card-head">
+    <span class="rank rank-11">11</span>
+    <img class="avatar" src="https://github.com/anthropics.png?size=56" width="28" height="28" loading="lazy" alt="">
+    <a class="card-title" href="https://github.com/anthropics/claude-code" target="_blank" rel="noopener" title="anthropics/claude-code"><span>anthropics /</span> <b>claude-code</b></a>
+  </div>
+  
+  <p class="card-desc">Claude Code is an agentic coding tool that lives in your terminal, understands your codebase, and helps you code faster by executing routine tasks, explaining complex code, and handling git workflows - all through natural language commands.</p>
+  
+  <div class="card-foot">
+    
+    <a href="https://github.com/topics/typescript" target="_blank" rel="noopener"><span class="lang-dot" style="background-color: #3178c6"></span>TypeScript</a>
+    
+    <a href="https://github.com/anthropics/claude-code/stargazers" target="_blank" rel="noopener" title="Stars">
+      <svg width="14" height="14" aria-hidden="true"><use href="#i-star"></use></svg>
+      <span class="num">148,361</span>
+    </a>
+    <a href="https://github.com/anthropics/claude-code/forks" target="_blank" rel="noopener" title="Forks">
+      <svg width="14" height="14" aria-hidden="true"><use href="#i-fork"></use></svg>
+      <span class="num">24,876</span>
+    </a>
+    
+    <span class="today num" title="1493 stars this week">
+      <svg width="12" height="12" aria-hidden="true"><use href="#i-up"></use></svg>
+      1493 this week
+    </span>
+    
   </div>
 </li>
+
+
   
-    <li>
-  <div class="info">
-    <div class="rank">
-      <span title="Ranking 11">11</span>
-      <a href="https://github.com/hummingbot/hummingbot" target="_blank" title="hummingbot/hummingbot">hummingbot/hummingbot</a>
-    </div>
-    <div class="sub-title followers">
-      
-      <a class="language" target="_blank" href="https://github.com/topics/python"  title="Programming Language Python">
-        <span style="background-color: #3572A5;"></span>Python
-      </a>
-      
-      <span class="star" title="Stargazers Count">
-        <svg aria-label="star" viewBox="0 0 14 16" version="1.1" width="14" height="16" role="img">
-          <path fill-rule="evenodd" d="M14 6l-4.9-.64L7 1 4.9 5.36 0 6l3.6 3.26L2.67 14 7 11.67 11.33 14l-.93-4.74L14 6z"></path>
-        </svg>
-        <span>13653</span>
-      </span>
-      <span class="star" title="Repo Forked">
-        <svg aria-label="repo-forked" height="16" viewBox="0 0 10 16" version="1.1" width="10" role="img">
-          <path fill-rule="evenodd" d="M8 1a1.993 1.993 0 0 0-1 3.72V6L5 8 3 6V4.72A1.993 1.993 0 0 0 2 1a1.993 1.993 0 0 0-1 3.72V6.5l3 3v1.78A1.993 1.993 0 0 0 5 15a1.993 1.993 0 0 0 1-3.72V9.5l3-3V4.72A1.993 1.993 0 0 0 8 1zM2 4.2C1.34 4.2.8 3.65.8 3c0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2 0 .65-.55 1.2-1.2 1.2zm3 10c-.66 0-1.2-.55-1.2-1.2 0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2 0 .65-.55 1.2-1.2 1.2zm3-10c-.66 0-1.2-.55-1.2-1.2 0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2 0 .65-.55 1.2-1.2 1.2z">
-        </path>
-        </svg>
-        <span>3736</span>
-      </span>
-      <span class="star">
-        <svg aria-label="star" viewBox="0 0 14 16" version="1.1" width="14" height="16" role="img">
-          <path fill-rule="evenodd" d="M14 6l-4.9-.64L7 1 4.9 5.36 0 6l3.6 3.26L2.67 14 7 11.67 11.33 14l-.93-4.74L14 6z"></path>
-        </svg>
-        <span>393 stars this week</span>
-      </span>
-    </div>
-    <div class="details">
-      Open source software that helps you create and deploy high-frequency crypto trading bots
-    </div>
+  
+<li class="card" data-search="affaan-m/ecc javascript the agent harness performance optimization system. skills, instincts, memory, security, and research-first development for claude code, codex, opencode, cursor and beyond.">
+  <div class="card-head">
+    <span class="rank rank-12">12</span>
+    <img class="avatar" src="https://github.com/affaan-m.png?size=56" width="28" height="28" loading="lazy" alt="">
+    <a class="card-title" href="https://github.com/affaan-m/ECC" target="_blank" rel="noopener" title="affaan-m/ECC"><span>affaan-m /</span> <b>ECC</b></a>
+  </div>
+  
+  <p class="card-desc">The agent harness performance optimization system. Skills, instincts, memory, security, and research-first development for Claude Code, Codex, Opencode, Cursor and beyond.</p>
+  
+  <div class="card-foot">
+    
+    <a href="https://github.com/topics/javascript" target="_blank" rel="noopener"><span class="lang-dot" style="background-color: #f1e05a"></span>JavaScript</a>
+    
+    <a href="https://github.com/affaan-m/ECC/stargazers" target="_blank" rel="noopener" title="Stars">
+      <svg width="14" height="14" aria-hidden="true"><use href="#i-star"></use></svg>
+      <span class="num">268,456</span>
+    </a>
+    <a href="https://github.com/affaan-m/ECC/forks" target="_blank" rel="noopener" title="Forks">
+      <svg width="14" height="14" aria-hidden="true"><use href="#i-fork"></use></svg>
+      <span class="num">40,108</span>
+    </a>
+    
+    <span class="today num" title="5175 stars this week">
+      <svg width="12" height="12" aria-hidden="true"><use href="#i-up"></use></svg>
+      5175 this week
+    </span>
+    
   </div>
 </li>
+
+
   
-    <li>
-  <div class="info">
-    <div class="rank">
-      <span title="Ranking 12">12</span>
-      <a href="https://github.com/Dokploy/dokploy" target="_blank" title="Dokploy/dokploy">Dokploy/dokploy</a>
-    </div>
-    <div class="sub-title followers">
-      
-      <a class="language" target="_blank" href="https://github.com/topics/typescript"  title="Programming Language TypeScript">
-        <span style="background-color: #3178c6;"></span>TypeScript
-      </a>
-      
-      <span class="star" title="Stargazers Count">
-        <svg aria-label="star" viewBox="0 0 14 16" version="1.1" width="14" height="16" role="img">
-          <path fill-rule="evenodd" d="M14 6l-4.9-.64L7 1 4.9 5.36 0 6l3.6 3.26L2.67 14 7 11.67 11.33 14l-.93-4.74L14 6z"></path>
-        </svg>
-        <span>22229</span>
-      </span>
-      <span class="star" title="Repo Forked">
-        <svg aria-label="repo-forked" height="16" viewBox="0 0 10 16" version="1.1" width="10" role="img">
-          <path fill-rule="evenodd" d="M8 1a1.993 1.993 0 0 0-1 3.72V6L5 8 3 6V4.72A1.993 1.993 0 0 0 2 1a1.993 1.993 0 0 0-1 3.72V6.5l3 3v1.78A1.993 1.993 0 0 0 5 15a1.993 1.993 0 0 0 1-3.72V9.5l3-3V4.72A1.993 1.993 0 0 0 8 1zM2 4.2C1.34 4.2.8 3.65.8 3c0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2 0 .65-.55 1.2-1.2 1.2zm3 10c-.66 0-1.2-.55-1.2-1.2 0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2 0 .65-.55 1.2-1.2 1.2zm3-10c-.66 0-1.2-.55-1.2-1.2 0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2 0 .65-.55 1.2-1.2 1.2z">
-        </path>
-        </svg>
-        <span>1222</span>
-      </span>
-      <span class="star">
-        <svg aria-label="star" viewBox="0 0 14 16" version="1.1" width="14" height="16" role="img">
-          <path fill-rule="evenodd" d="M14 6l-4.9-.64L7 1 4.9 5.36 0 6l3.6 3.26L2.67 14 7 11.67 11.33 14l-.93-4.74L14 6z"></path>
-        </svg>
-        <span>699 stars this week</span>
-      </span>
-    </div>
-    <div class="details">
-      Open Source Alternative to Vercel, Netlify and Heroku.
-    </div>
+  
+<li class="card" data-search="rohitg00/ai-engineering-from-scratch python learn it. build it. ship it for others.">
+  <div class="card-head">
+    <span class="rank rank-13">13</span>
+    <img class="avatar" src="https://github.com/rohitg00.png?size=56" width="28" height="28" loading="lazy" alt="">
+    <a class="card-title" href="https://github.com/rohitg00/ai-engineering-from-scratch" target="_blank" rel="noopener" title="rohitg00/ai-engineering-from-scratch"><span>rohitg00 /</span> <b>ai-engineering-from-scratch</b></a>
+  </div>
+  
+  <p class="card-desc">Learn it. Build it. Ship it for others.</p>
+  
+  <div class="card-foot">
+    
+    <a href="https://github.com/topics/python" target="_blank" rel="noopener"><span class="lang-dot" style="background-color: #3572A5"></span>Python</a>
+    
+    <a href="https://github.com/rohitg00/ai-engineering-from-scratch/stargazers" target="_blank" rel="noopener" title="Stars">
+      <svg width="14" height="14" aria-hidden="true"><use href="#i-star"></use></svg>
+      <span class="num">59,418</span>
+    </a>
+    <a href="https://github.com/rohitg00/ai-engineering-from-scratch/forks" target="_blank" rel="noopener" title="Forks">
+      <svg width="14" height="14" aria-hidden="true"><use href="#i-fork"></use></svg>
+      <span class="num">10,249</span>
+    </a>
+    
+    <span class="today num" title="3850 stars this week">
+      <svg width="12" height="12" aria-hidden="true"><use href="#i-up"></use></svg>
+      3850 this week
+    </span>
+    
   </div>
 </li>
+
+
   
-    <li>
-  <div class="info">
-    <div class="rank">
-      <span title="Ranking 13">13</span>
-      <a href="https://github.com/zephyrproject-rtos/zephyr" target="_blank" title="zephyrproject-rtos/zephyr">zephyrproject-rtos/zephyr</a>
-    </div>
-    <div class="sub-title followers">
-      
-      <a class="language" target="_blank" href="https://github.com/topics/c"  title="Programming Language C">
-        <span style="background-color: #555555;"></span>C
-      </a>
-      
-      <span class="star" title="Stargazers Count">
-        <svg aria-label="star" viewBox="0 0 14 16" version="1.1" width="14" height="16" role="img">
-          <path fill-rule="evenodd" d="M14 6l-4.9-.64L7 1 4.9 5.36 0 6l3.6 3.26L2.67 14 7 11.67 11.33 14l-.93-4.74L14 6z"></path>
-        </svg>
-        <span>12678</span>
-      </span>
-      <span class="star" title="Repo Forked">
-        <svg aria-label="repo-forked" height="16" viewBox="0 0 10 16" version="1.1" width="10" role="img">
-          <path fill-rule="evenodd" d="M8 1a1.993 1.993 0 0 0-1 3.72V6L5 8 3 6V4.72A1.993 1.993 0 0 0 2 1a1.993 1.993 0 0 0-1 3.72V6.5l3 3v1.78A1.993 1.993 0 0 0 5 15a1.993 1.993 0 0 0 1-3.72V9.5l3-3V4.72A1.993 1.993 0 0 0 8 1zM2 4.2C1.34 4.2.8 3.65.8 3c0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2 0 .65-.55 1.2-1.2 1.2zm3 10c-.66 0-1.2-.55-1.2-1.2 0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2 0 .65-.55 1.2-1.2 1.2zm3-10c-.66 0-1.2-.55-1.2-1.2 0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2 0 .65-.55 1.2-1.2 1.2z">
-        </path>
-        </svg>
-        <span>7693</span>
-      </span>
-      <span class="star">
-        <svg aria-label="star" viewBox="0 0 14 16" version="1.1" width="14" height="16" role="img">
-          <path fill-rule="evenodd" d="M14 6l-4.9-.64L7 1 4.9 5.36 0 6l3.6 3.26L2.67 14 7 11.67 11.33 14l-.93-4.74L14 6z"></path>
-        </svg>
-        <span>175 stars this week</span>
-      </span>
-    </div>
-    <div class="details">
-      Primary Git Repository for the Zephyr Project. Zephyr is a new generation, scalable, optimized, secure RTOS for multiple hardware architectures.
-    </div>
+  
+<li class="card" data-search="alibaba/open-code-review go secure, fast, efficient, battle-tested at alibaba&#39;s scale. hybrid architecture code review tool: deterministic pipelines + llm agent, precise line-level comments, built-in multi-language ruleset (npe, thread-safety, xss, sql injection), openai &amp; anthropic compatible.">
+  <div class="card-head">
+    <span class="rank rank-14">14</span>
+    <img class="avatar" src="https://github.com/alibaba.png?size=56" width="28" height="28" loading="lazy" alt="">
+    <a class="card-title" href="https://github.com/alibaba/open-code-review" target="_blank" rel="noopener" title="alibaba/open-code-review"><span>alibaba /</span> <b>open-code-review</b></a>
+  </div>
+  
+  <p class="card-desc">Secure, fast, efficient, battle-tested at Alibaba&#39;s scale. Hybrid architecture code review tool: deterministic pipelines + LLM Agent, precise line-level comments, built-in multi-language ruleset (NPE, thread-safety, XSS, SQL injection), OpenAI &amp; Anthropic compatible.</p>
+  
+  <div class="card-foot">
+    
+    <a href="https://github.com/topics/go" target="_blank" rel="noopener"><span class="lang-dot" style="background-color: #00ADD8"></span>Go</a>
+    
+    <a href="https://github.com/alibaba/open-code-review/stargazers" target="_blank" rel="noopener" title="Stars">
+      <svg width="14" height="14" aria-hidden="true"><use href="#i-star"></use></svg>
+      <span class="num">41,964</span>
+    </a>
+    <a href="https://github.com/alibaba/open-code-review/forks" target="_blank" rel="noopener" title="Forks">
+      <svg width="14" height="14" aria-hidden="true"><use href="#i-fork"></use></svg>
+      <span class="num">3,012</span>
+    </a>
+    
+    <span class="today num" title="3727 stars this week">
+      <svg width="12" height="12" aria-hidden="true"><use href="#i-up"></use></svg>
+      3727 this week
+    </span>
+    
   </div>
 </li>
+
+
   
-    <li>
-  <div class="info">
-    <div class="rank">
-      <span title="Ranking 14">14</span>
-      <a href="https://github.com/moby/moby" target="_blank" title="moby/moby">moby/moby</a>
-    </div>
-    <div class="sub-title followers">
-      
-      <a class="language" target="_blank" href="https://github.com/topics/go"  title="Programming Language Go">
-        <span style="background-color: #00ADD8;"></span>Go
-      </a>
-      
-      <span class="star" title="Stargazers Count">
-        <svg aria-label="star" viewBox="0 0 14 16" version="1.1" width="14" height="16" role="img">
-          <path fill-rule="evenodd" d="M14 6l-4.9-.64L7 1 4.9 5.36 0 6l3.6 3.26L2.67 14 7 11.67 11.33 14l-.93-4.74L14 6z"></path>
-        </svg>
-        <span>70343</span>
-      </span>
-      <span class="star" title="Repo Forked">
-        <svg aria-label="repo-forked" height="16" viewBox="0 0 10 16" version="1.1" width="10" role="img">
-          <path fill-rule="evenodd" d="M8 1a1.993 1.993 0 0 0-1 3.72V6L5 8 3 6V4.72A1.993 1.993 0 0 0 2 1a1.993 1.993 0 0 0-1 3.72V6.5l3 3v1.78A1.993 1.993 0 0 0 5 15a1.993 1.993 0 0 0 1-3.72V9.5l3-3V4.72A1.993 1.993 0 0 0 8 1zM2 4.2C1.34 4.2.8 3.65.8 3c0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2 0 .65-.55 1.2-1.2 1.2zm3 10c-.66 0-1.2-.55-1.2-1.2 0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2 0 .65-.55 1.2-1.2 1.2zm3-10c-.66 0-1.2-.55-1.2-1.2 0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2 0 .65-.55 1.2-1.2 1.2z">
-        </path>
-        </svg>
-        <span>18787</span>
-      </span>
-      <span class="star">
-        <svg aria-label="star" viewBox="0 0 14 16" version="1.1" width="14" height="16" role="img">
-          <path fill-rule="evenodd" d="M14 6l-4.9-.64L7 1 4.9 5.36 0 6l3.6 3.26L2.67 14 7 11.67 11.33 14l-.93-4.74L14 6z"></path>
-        </svg>
-        <span>243 stars this week</span>
-      </span>
-    </div>
-    <div class="details">
-      The Moby Project - a collaborative project for the container ecosystem to assemble container-based systems
-    </div>
+  
+<li class="card" data-search="cloudflare/quiche rust 🥧 savoury implementation of the quic transport protocol and http/3">
+  <div class="card-head">
+    <span class="rank rank-15">15</span>
+    <img class="avatar" src="https://github.com/cloudflare.png?size=56" width="28" height="28" loading="lazy" alt="">
+    <a class="card-title" href="https://github.com/cloudflare/quiche" target="_blank" rel="noopener" title="cloudflare/quiche"><span>cloudflare /</span> <b>quiche</b></a>
+  </div>
+  
+  <p class="card-desc">🥧 Savoury implementation of the QUIC transport protocol and HTTP/3</p>
+  
+  <div class="card-foot">
+    
+    <a href="https://github.com/topics/rust" target="_blank" rel="noopener"><span class="lang-dot" style="background-color: #dea584"></span>Rust</a>
+    
+    <a href="https://github.com/cloudflare/quiche/stargazers" target="_blank" rel="noopener" title="Stars">
+      <svg width="14" height="14" aria-hidden="true"><use href="#i-star"></use></svg>
+      <span class="num">12,665</span>
+    </a>
+    <a href="https://github.com/cloudflare/quiche/forks" target="_blank" rel="noopener" title="Forks">
+      <svg width="14" height="14" aria-hidden="true"><use href="#i-fork"></use></svg>
+      <span class="num">1,151</span>
+    </a>
+    
+    <span class="today num" title="521 stars this week">
+      <svg width="12" height="12" aria-hidden="true"><use href="#i-up"></use></svg>
+      521 this week
+    </span>
+    
   </div>
 </li>
+
+
   
-    <li>
-  <div class="info">
-    <div class="rank">
-      <span title="Ranking 15">15</span>
-      <a href="https://github.com/getzep/graphiti" target="_blank" title="getzep/graphiti">getzep/graphiti</a>
-    </div>
-    <div class="sub-title followers">
-      
-      <a class="language" target="_blank" href="https://github.com/topics/python"  title="Programming Language Python">
-        <span style="background-color: #3572A5;"></span>Python
-      </a>
-      
-      <span class="star" title="Stargazers Count">
-        <svg aria-label="star" viewBox="0 0 14 16" version="1.1" width="14" height="16" role="img">
-          <path fill-rule="evenodd" d="M14 6l-4.9-.64L7 1 4.9 5.36 0 6l3.6 3.26L2.67 14 7 11.67 11.33 14l-.93-4.74L14 6z"></path>
-        </svg>
-        <span>15166</span>
-      </span>
-      <span class="star" title="Repo Forked">
-        <svg aria-label="repo-forked" height="16" viewBox="0 0 10 16" version="1.1" width="10" role="img">
-          <path fill-rule="evenodd" d="M8 1a1.993 1.993 0 0 0-1 3.72V6L5 8 3 6V4.72A1.993 1.993 0 0 0 2 1a1.993 1.993 0 0 0-1 3.72V6.5l3 3v1.78A1.993 1.993 0 0 0 5 15a1.993 1.993 0 0 0 1-3.72V9.5l3-3V4.72A1.993 1.993 0 0 0 8 1zM2 4.2C1.34 4.2.8 3.65.8 3c0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2 0 .65-.55 1.2-1.2 1.2zm3 10c-.66 0-1.2-.55-1.2-1.2 0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2 0 .65-.55 1.2-1.2 1.2zm3-10c-.66 0-1.2-.55-1.2-1.2 0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2 0 .65-.55 1.2-1.2 1.2z">
-        </path>
-        </svg>
-        <span>1285</span>
-      </span>
-      <span class="star">
-        <svg aria-label="star" viewBox="0 0 14 16" version="1.1" width="14" height="16" role="img">
-          <path fill-rule="evenodd" d="M14 6l-4.9-.64L7 1 4.9 5.36 0 6l3.6 3.26L2.67 14 7 11.67 11.33 14l-.93-4.74L14 6z"></path>
-        </svg>
-        <span>954 stars this week</span>
-      </span>
-    </div>
-    <div class="details">
-      Build Real-Time Knowledge Graphs for AI Agents
-    </div>
+  
+<li class="card" data-search="tencentcloud/octop python a smarter, self-hosted ai assistant — multi-user, multi-agent.">
+  <div class="card-head">
+    <span class="rank rank-16">16</span>
+    <img class="avatar" src="https://github.com/TencentCloud.png?size=56" width="28" height="28" loading="lazy" alt="">
+    <a class="card-title" href="https://github.com/TencentCloud/Octop" target="_blank" rel="noopener" title="TencentCloud/Octop"><span>TencentCloud /</span> <b>Octop</b></a>
+  </div>
+  
+  <p class="card-desc">A smarter, self-hosted AI assistant — multi-user, multi-agent.</p>
+  
+  <div class="card-foot">
+    
+    <a href="https://github.com/topics/python" target="_blank" rel="noopener"><span class="lang-dot" style="background-color: #3572A5"></span>Python</a>
+    
+    <a href="https://github.com/TencentCloud/Octop/stargazers" target="_blank" rel="noopener" title="Stars">
+      <svg width="14" height="14" aria-hidden="true"><use href="#i-star"></use></svg>
+      <span class="num">5,302</span>
+    </a>
+    <a href="https://github.com/TencentCloud/Octop/forks" target="_blank" rel="noopener" title="Forks">
+      <svg width="14" height="14" aria-hidden="true"><use href="#i-fork"></use></svg>
+      <span class="num">646</span>
+    </a>
+    
+    <span class="today num" title="869 stars this week">
+      <svg width="12" height="12" aria-hidden="true"><use href="#i-up"></use></svg>
+      869 this week
+    </span>
+    
   </div>
 </li>
+
+
   
-    <li>
-  <div class="info">
-    <div class="rank">
-      <span title="Ranking 16">16</span>
-      <a href="https://github.com/simstudioai/sim" target="_blank" title="simstudioai/sim">simstudioai/sim</a>
-    </div>
-    <div class="sub-title followers">
-      
-      <a class="language" target="_blank" href="https://github.com/topics/typescript"  title="Programming Language TypeScript">
-        <span style="background-color: #3178c6;"></span>TypeScript
-      </a>
-      
-      <span class="star" title="Stargazers Count">
-        <svg aria-label="star" viewBox="0 0 14 16" version="1.1" width="14" height="16" role="img">
-          <path fill-rule="evenodd" d="M14 6l-4.9-.64L7 1 4.9 5.36 0 6l3.6 3.26L2.67 14 7 11.67 11.33 14l-.93-4.74L14 6z"></path>
-        </svg>
-        <span>6134</span>
-      </span>
-      <span class="star" title="Repo Forked">
-        <svg aria-label="repo-forked" height="16" viewBox="0 0 10 16" version="1.1" width="10" role="img">
-          <path fill-rule="evenodd" d="M8 1a1.993 1.993 0 0 0-1 3.72V6L5 8 3 6V4.72A1.993 1.993 0 0 0 2 1a1.993 1.993 0 0 0-1 3.72V6.5l3 3v1.78A1.993 1.993 0 0 0 5 15a1.993 1.993 0 0 0 1-3.72V9.5l3-3V4.72A1.993 1.993 0 0 0 8 1zM2 4.2C1.34 4.2.8 3.65.8 3c0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2 0 .65-.55 1.2-1.2 1.2zm3 10c-.66 0-1.2-.55-1.2-1.2 0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2 0 .65-.55 1.2-1.2 1.2zm3-10c-.66 0-1.2-.55-1.2-1.2 0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2 0 .65-.55 1.2-1.2 1.2z">
-        </path>
-        </svg>
-        <span>841</span>
-      </span>
-      <span class="star">
-        <svg aria-label="star" viewBox="0 0 14 16" version="1.1" width="14" height="16" role="img">
-          <path fill-rule="evenodd" d="M14 6l-4.9-.64L7 1 4.9 5.36 0 6l3.6 3.26L2.67 14 7 11.67 11.33 14l-.93-4.74L14 6z"></path>
-        </svg>
-        <span>1204 stars this week</span>
-      </span>
-    </div>
-    <div class="details">
-      Sim Studio is an open-source AI agent workflow builder. Sim Studio&#39;s interface is a lightweight, intuitive way to quickly build and deploy LLMs that connect with your favorite tools.
-    </div>
+  
+<li class="card" data-search="anthropics/knowledge-work-plugins python open source repository of plugins primarily intended for knowledge workers to use in claude cowork">
+  <div class="card-head">
+    <span class="rank rank-17">17</span>
+    <img class="avatar" src="https://github.com/anthropics.png?size=56" width="28" height="28" loading="lazy" alt="">
+    <a class="card-title" href="https://github.com/anthropics/knowledge-work-plugins" target="_blank" rel="noopener" title="anthropics/knowledge-work-plugins"><span>anthropics /</span> <b>knowledge-work-plugins</b></a>
+  </div>
+  
+  <p class="card-desc">Open source repository of plugins primarily intended for knowledge workers to use in Claude Cowork</p>
+  
+  <div class="card-foot">
+    
+    <a href="https://github.com/topics/python" target="_blank" rel="noopener"><span class="lang-dot" style="background-color: #3572A5"></span>Python</a>
+    
+    <a href="https://github.com/anthropics/knowledge-work-plugins/stargazers" target="_blank" rel="noopener" title="Stars">
+      <svg width="14" height="14" aria-hidden="true"><use href="#i-star"></use></svg>
+      <span class="num">25,768</span>
+    </a>
+    <a href="https://github.com/anthropics/knowledge-work-plugins/forks" target="_blank" rel="noopener" title="Forks">
+      <svg width="14" height="14" aria-hidden="true"><use href="#i-fork"></use></svg>
+      <span class="num">3,038</span>
+    </a>
+    
+    <span class="today num" title="478 stars this week">
+      <svg width="12" height="12" aria-hidden="true"><use href="#i-up"></use></svg>
+      478 this week
+    </span>
+    
   </div>
 </li>
+
+
   
-    <li>
-  <div class="info">
-    <div class="rank">
-      <span title="Ranking 17">17</span>
-      <a href="https://github.com/arc53/DocsGPT" target="_blank" title="arc53/DocsGPT">arc53/DocsGPT</a>
-    </div>
-    <div class="sub-title followers">
-      
-      <a class="language" target="_blank" href="https://github.com/topics/typescript"  title="Programming Language TypeScript">
-        <span style="background-color: #3178c6;"></span>TypeScript
-      </a>
-      
-      <span class="star" title="Stargazers Count">
-        <svg aria-label="star" viewBox="0 0 14 16" version="1.1" width="14" height="16" role="img">
-          <path fill-rule="evenodd" d="M14 6l-4.9-.64L7 1 4.9 5.36 0 6l3.6 3.26L2.67 14 7 11.67 11.33 14l-.93-4.74L14 6z"></path>
-        </svg>
-        <span>16801</span>
-      </span>
-      <span class="star" title="Repo Forked">
-        <svg aria-label="repo-forked" height="16" viewBox="0 0 10 16" version="1.1" width="10" role="img">
-          <path fill-rule="evenodd" d="M8 1a1.993 1.993 0 0 0-1 3.72V6L5 8 3 6V4.72A1.993 1.993 0 0 0 2 1a1.993 1.993 0 0 0-1 3.72V6.5l3 3v1.78A1.993 1.993 0 0 0 5 15a1.993 1.993 0 0 0 1-3.72V9.5l3-3V4.72A1.993 1.993 0 0 0 8 1zM2 4.2C1.34 4.2.8 3.65.8 3c0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2 0 .65-.55 1.2-1.2 1.2zm3 10c-.66 0-1.2-.55-1.2-1.2 0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2 0 .65-.55 1.2-1.2 1.2zm3-10c-.66 0-1.2-.55-1.2-1.2 0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2 0 .65-.55 1.2-1.2 1.2z">
-        </path>
-        </svg>
-        <span>1748</span>
-      </span>
-      <span class="star">
-        <svg aria-label="star" viewBox="0 0 14 16" version="1.1" width="14" height="16" role="img">
-          <path fill-rule="evenodd" d="M14 6l-4.9-.64L7 1 4.9 5.36 0 6l3.6 3.26L2.67 14 7 11.67 11.33 14l-.93-4.74L14 6z"></path>
-        </svg>
-        <span>244 stars this week</span>
-      </span>
-    </div>
-    <div class="details">
-      DocsGPT is an open-source genAI tool that helps users get reliable answers from knowledge source, while avoiding hallucinations. It enables private and reliable information retrieval, with tooling and agentic system capability built in.
-    </div>
+  
+<li class="card" data-search="fxembed/fxembed typescript fix x/twitter and bluesky embeds! use multiple images, videos, polls, translations and more on discord, telegram and others">
+  <div class="card-head">
+    <span class="rank rank-18">18</span>
+    <img class="avatar" src="https://github.com/FxEmbed.png?size=56" width="28" height="28" loading="lazy" alt="">
+    <a class="card-title" href="https://github.com/FxEmbed/FxEmbed" target="_blank" rel="noopener" title="FxEmbed/FxEmbed"><span>FxEmbed /</span> <b>FxEmbed</b></a>
+  </div>
+  
+  <p class="card-desc">Fix X/Twitter and Bluesky embeds! Use multiple images, videos, polls, translations and more on Discord, Telegram and others</p>
+  
+  <div class="card-foot">
+    
+    <a href="https://github.com/topics/typescript" target="_blank" rel="noopener"><span class="lang-dot" style="background-color: #3178c6"></span>TypeScript</a>
+    
+    <a href="https://github.com/FxEmbed/FxEmbed/stargazers" target="_blank" rel="noopener" title="Stars">
+      <svg width="14" height="14" aria-hidden="true"><use href="#i-star"></use></svg>
+      <span class="num">5,508</span>
+    </a>
+    <a href="https://github.com/FxEmbed/FxEmbed/forks" target="_blank" rel="noopener" title="Forks">
+      <svg width="14" height="14" aria-hidden="true"><use href="#i-fork"></use></svg>
+      <span class="num">261</span>
+    </a>
+    
+    <span class="today num" title="432 stars this week">
+      <svg width="12" height="12" aria-hidden="true"><use href="#i-up"></use></svg>
+      432 this week
+    </span>
+    
   </div>
 </li>
-  
-    <li>
-  <div class="info">
-    <div class="rank">
-      <span title="Ranking 18">18</span>
-      <a href="https://github.com/gitleaks/gitleaks" target="_blank" title="gitleaks/gitleaks">gitleaks/gitleaks</a>
-    </div>
-    <div class="sub-title followers">
-      
-      <a class="language" target="_blank" href="https://github.com/topics/go"  title="Programming Language Go">
-        <span style="background-color: #00ADD8;"></span>Go
-      </a>
-      
-      <span class="star" title="Stargazers Count">
-        <svg aria-label="star" viewBox="0 0 14 16" version="1.1" width="14" height="16" role="img">
-          <path fill-rule="evenodd" d="M14 6l-4.9-.64L7 1 4.9 5.36 0 6l3.6 3.26L2.67 14 7 11.67 11.33 14l-.93-4.74L14 6z"></path>
-        </svg>
-        <span>22614</span>
-      </span>
-      <span class="star" title="Repo Forked">
-        <svg aria-label="repo-forked" height="16" viewBox="0 0 10 16" version="1.1" width="10" role="img">
-          <path fill-rule="evenodd" d="M8 1a1.993 1.993 0 0 0-1 3.72V6L5 8 3 6V4.72A1.993 1.993 0 0 0 2 1a1.993 1.993 0 0 0-1 3.72V6.5l3 3v1.78A1.993 1.993 0 0 0 5 15a1.993 1.993 0 0 0 1-3.72V9.5l3-3V4.72A1.993 1.993 0 0 0 8 1zM2 4.2C1.34 4.2.8 3.65.8 3c0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2 0 .65-.55 1.2-1.2 1.2zm3 10c-.66 0-1.2-.55-1.2-1.2 0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2 0 .65-.55 1.2-1.2 1.2zm3-10c-.66 0-1.2-.55-1.2-1.2 0-.65.55-1.2 1.2-1.2.65 0 1.2.55 1.2 1.2 0 .65-.55 1.2-1.2 1.2z">
-        </path>
-        </svg>
-        <span>1734</span>
-      </span>
-      <span class="star">
-        <svg aria-label="star" viewBox="0 0 14 16" version="1.1" width="14" height="16" role="img">
-          <path fill-rule="evenodd" d="M14 6l-4.9-.64L7 1 4.9 5.36 0 6l3.6 3.26L2.67 14 7 11.67 11.33 14l-.93-4.74L14 6z"></path>
-        </svg>
-        <span>509 stars this week</span>
-      </span>
-    </div>
-    <div class="details">
-      Find secrets with Gitleaks 🔑
-    </div>
-  </div>
-</li>
+
+
   
 </ul>
-  <div class="footer">
-    <div>
-      <a href="https://github.com/hunghg255/github-rank/network" target="_blank">
-        <img src="https://img.shields.io/github/forks/hunghg255/github-rank.svg">
-      </a>
-      <a href="https://github.com/hunghg255/github-rank/stargazers" target="_blank">
-        <img src="https://img.shields.io/github/stars/hunghg255/github-rank.svg">
-      </a>
-      <a href="https://www.npmjs.com/package/@wcj/github-rank" target="_blank">
-        <img src="https://img.shields.io/npm/v/@wcj/github-rank.svg">
-      </a>
-      <a href="https://unpkg.com/@wcj/github-rank/web/index.html" target="_blank">
-        <img src="https://img.shields.io/npm/v/@wcj/github-rank.svg?label=unpkg">
-      </a>
+    <p class="empty" id="empty">No results match your search.</p>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <div>Made by <a href="https://github.com/hunghg255" target="_blank" rel="noopener">hunghg255</a> · Data from the GitHub API.</div>
+      <div class="footer-links">
+        <a href="https://github.com/hunghg255/github-rank" target="_blank" rel="noopener">Source</a>
+        <a href="https://github.com/hunghg255/github-rank/stargazers" target="_blank" rel="noopener">Star on GitHub</a>
+        <a href="https://github.com/hunghg255/github-rank/issues" target="_blank" rel="noopener">Report an issue</a>
+      </div>
     </div>
-    <div class="time">Last cache created on 2025/7/27 by Github API v3.</div>
-    Create by <a href="https://github.com/hunghg255" target="_blank">hunghg255</a>.
-  </div>
+  </footer>
+
+  <button class="icon-btn to-top" type="button" aria-label="Back to top" title="Back to top">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M3.47 7.78a.75.75 0 0 1 0-1.06l4.25-4.25a.75.75 0 0 1 1.06 0l4.25 4.25a.751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018L9 4.81v7.44a.75.75 0 0 1-1.5 0V4.81L4.53 7.78a.75.75 0 0 1-1.06 0Z"></path></svg>
+  </button>
+
+  <script>
+    (function () {
+      var root = document.documentElement;
+
+      // Theme toggle: explicit choice is remembered, otherwise follow the OS.
+      var toggle = document.querySelector('.theme-toggle');
+      toggle && toggle.addEventListener('click', function () {
+        var current = root.getAttribute('data-theme') ||
+          (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        var next = current === 'dark' ? 'light' : 'dark';
+        root.setAttribute('data-theme', next);
+        try { localStorage.setItem('gr-theme', next); } catch (e) {}
+      });
+
+      // Client-side filter over items carrying data-search.
+      var input = document.getElementById('search');
+      var items = Array.prototype.slice.call(document.querySelectorAll('[data-search]'));
+      var count = document.getElementById('count');
+      var empty = document.getElementById('empty');
+      function render(visible) {
+        if (count) count.textContent = visible === items.length
+          ? items.length.toLocaleString() + ' items'
+          : visible.toLocaleString() + ' of ' + items.length.toLocaleString();
+        if (empty) empty.style.display = visible ? 'none' : 'block';
+      }
+      if (input) {
+        input.addEventListener('input', function () {
+          var q = input.value.trim().toLowerCase();
+          var visible = 0;
+          items.forEach(function (el) {
+            var match = !q || el.getAttribute('data-search').indexOf(q) !== -1;
+            el.hidden = !match;
+            if (match) visible++;
+          });
+          render(visible);
+        });
+      }
+      render(items.length);
+
+      var top = document.querySelector('.to-top');
+      if (top) {
+        window.addEventListener('scroll', function () {
+          top.classList.toggle('show', window.scrollY > 600);
+        }, { passive: true });
+        top.addEventListener('click', function () { window.scrollTo({ top: 0, behavior: 'smooth' }); });
+      }
+    })();
+  </script>
 </body>
 </html>
+
