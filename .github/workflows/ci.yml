@@ -38,8 +38,8 @@ jobs:
       - run: npm run get:repos
       - run: npm run get:users
       - run: npm run get:users:vietnam
-      - run: cat .cache/users.json
-      - run: cat .cache/users.vietnam.json
+      - name: Check fetched users
+        run: node -e 'for (const f of [".cache/users.json", ".cache/users.vietnam.json"]) console.log(f, require("./" + f).length)'
       - run: npm run get:users:info
 
       - run: npm run start
