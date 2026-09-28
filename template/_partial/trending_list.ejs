@@ -1,8 +1,0 @@
-<%- include('./repo_card', {
-  repo,
-  idx,
-  color: repo.color,
-  forks: repo.forked,
-  today: repo.todayStar,
-  avatar: `https://github.com/${String(repo.full_name || '').split('/')[0]}.png?size=56`,
-}); %>

@@ -270,6 +270,50 @@
     .lang-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--subtle); border: 1px solid rgba(127, 127, 127, .2); }
     .today { margin-left: auto; color: var(--success); font-weight: 600; }
 
+    /* Filter chips */
+    .chips { display: flex; flex-wrap: wrap; gap: 8px; margin: -4px 0 16px; }
+    @media (max-width: 640px) {
+      .chips { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; margin: -4px -16px 16px; padding: 0 16px 2px; }
+    }
+    .chips::-webkit-scrollbar { display: none; }
+    .chip {
+      display: inline-flex; align-items: center; gap: 6px; flex-shrink: 0;
+      height: 32px; padding: 0 12px; border-radius: 999px; cursor: pointer;
+      border: 1px solid var(--border); background: var(--surface); color: var(--text);
+      font: inherit; font-size: 13px; font-weight: 500;
+    }
+    .chip:hover { border-color: var(--accent); }
+    .chip .n { color: var(--muted); font-weight: 400; font-variant-numeric: tabular-nums; }
+    .chip[aria-pressed="true"] { background: var(--text); border-color: var(--text); color: var(--bg); }
+    .chip[aria-pressed="true"] .n { color: inherit; opacity: .7; }
+    .chip .lang-dot { width: 9px; height: 9px; }
+
+    /* User extras */
+    .user-title { display: flex; align-items: center; gap: 6px; min-width: 0; }
+    .user-title > a:first-child { min-width: 0; }
+    .user-links { display: inline-flex; gap: 2px; flex-shrink: 0; }
+    .user-links a { display: inline-grid; place-items: center; width: 22px; height: 22px; border-radius: 6px; color: var(--subtle); }
+    .user-links a:hover { color: var(--accent); background: var(--accent-soft); }
+    .user-name .bio { color: var(--muted); font-size: 12px; margin-top: 2px; }
+    @media (max-width: 720px) {
+      .user-name .bio { white-space: normal; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+    }
+
+    /* Repo extras */
+    .topics { display: flex; flex-wrap: wrap; gap: 6px; }
+    .topic {
+      padding: 1px 9px; border-radius: 999px; font-size: 12px; line-height: 20px;
+      background: var(--accent-soft); color: var(--accent);
+    }
+    .topic:hover { text-decoration: none; background: var(--accent); color: var(--accent-fg); }
+    .tag {
+      flex-shrink: 0; padding: 0 7px; border-radius: 999px; font-size: 11px; line-height: 18px; font-weight: 600;
+      border: 1px solid var(--border); color: var(--muted);
+    }
+    .tag-archived { border-color: #bf8700; color: #bf8700; }
+    .card-head .home { margin-left: auto; color: var(--subtle); display: inline-grid; place-items: center; width: 26px; height: 26px; border-radius: 6px; flex-shrink: 0; }
+    .card-head .home:hover { color: var(--accent); background: var(--accent-soft); }
+
     /* Footer */
     .footer { margin-top: 40px; padding: 24px 0 calc(32px + env(safe-area-inset-bottom)); border-top: 1px solid var(--border); color: var(--muted); font-size: 13px; }
     .footer .container { display: flex; flex-wrap: wrap; gap: 8px 24px; justify-content: space-between; align-items: center; }
@@ -310,6 +354,11 @@
     <symbol id="i-up" viewBox="0 0 16 16" fill="currentColor"><path d="M4.53 4.75 8 1.28l3.47 3.47a.749.749 0 0 1-.326 1.275.749.749 0 0 1-.734-.215L8.75 4.15v10.1a.75.75 0 0 1-1.5 0V4.15L5.59 5.81a.749.749 0 0 1-1.275-.326.749.749 0 0 1 .215-.734Z"></path></symbol>
     <symbol id="i-location" viewBox="0 0 16 16" fill="currentColor"><path d="m12.596 11.596-3.535 3.536a1.5 1.5 0 0 1-2.122 0l-3.535-3.536a6.5 6.5 0 1 1 9.192-9.193 6.5 6.5 0 0 1 0 9.193Zm-1.06-8.132v-.001a5 5 0 1 0-7.072 7.072L8 14.07l3.536-3.534a5 5 0 0 0 0-7.072ZM8 9a2 2 0 1 1-.001-3.999A2 2 0 0 1 8 9Z"></path></symbol>
     <symbol id="i-company" viewBox="0 0 16 16" fill="currentColor"><path d="M1.75 16A1.75 1.75 0 0 1 0 14.25V1.75C0 .784.784 0 1.75 0h8.5C11.216 0 12 .784 12 1.75v12.5c0 .085-.006.168-.018.25h2.268a.25.25 0 0 0 .25-.25V8.285a.25.25 0 0 0-.111-.208l-1.055-.703a.749.749 0 1 1 .832-1.248l1.055.703c.487.325.779.871.779 1.456v5.965A1.75 1.75 0 0 1 14.25 16h-3.5a.766.766 0 0 1-.197-.026c-.099.017-.2.026-.303.026h-3a.75.75 0 0 1-.75-.75V14h-1v1.25a.75.75 0 0 1-.75.75Zm-.25-1.75c0 .138.112.25.25.25H4v-1.25a.75.75 0 0 1 .75-.75h2.5a.75.75 0 0 1 .75.75v1.25h2.25a.25.25 0 0 0 .25-.25V1.75a.25.25 0 0 0-.25-.25h-8.5a.25.25 0 0 0-.25.25ZM3.75 6h.5a.75.75 0 0 1 0 1.5h-.5a.75.75 0 0 1 0-1.5ZM3 3.75A.75.75 0 0 1 3.75 3h.5a.75.75 0 0 1 0 1.5h-.5A.75.75 0 0 1 3 3.75Zm4 3A.75.75 0 0 1 7.75 6h.5a.75.75 0 0 1 0 1.5h-.5A.75.75 0 0 1 7 6.75ZM7.75 3h.5a.75.75 0 0 1 0 1.5h-.5a.75.75 0 0 1 0-1.5ZM3 9.75A.75.75 0 0 1 3.75 9h.5a.75.75 0 0 1 0 1.5h-.5A.75.75 0 0 1 3 9.75ZM7.75 9h.5a.75.75 0 0 1 0 1.5h-.5a.75.75 0 0 1 0-1.5Z"></path></symbol>
+    <symbol id="i-link" viewBox="0 0 16 16" fill="currentColor"><path d="m7.775 3.275 1.25-1.25a3.5 3.5 0 1 1 4.95 4.95l-2.5 2.5a3.5 3.5 0 0 1-4.95 0 .751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018 1.998 1.998 0 0 0 2.83 0l2.5-2.5a2.002 2.002 0 0 0-2.83-2.83l-1.25 1.25a.751.751 0 0 1-1.042-.018.751.751 0 0 1-.018-1.042Zm-4.69 9.64a1.998 1.998 0 0 0 2.83 0l1.25-1.25a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042l-1.25 1.25a3.5 3.5 0 1 1-4.95-4.95l2.5-2.5a3.5 3.5 0 0 1 4.95 0 .751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018 1.998 1.998 0 0 0-2.83 0l-2.5 2.5a1.998 1.998 0 0 0 0 2.83Z"></path></symbol>
+    <symbol id="i-x" viewBox="0 0 16 16" fill="currentColor"><path d="M9.52 6.78 15.34 0h-1.38L8.9 5.89 4.87 0H.21l6.1 8.88L.21 16h1.38l5.33-6.2L11.18 16h4.66L9.52 6.78Zm-1.89 2.2-.62-.89L2.09 1.04h2.12l3.97 5.68.62.89 5.16 7.38h-2.12L7.63 8.98Z"></path></symbol>
+    <symbol id="i-law" viewBox="0 0 16 16" fill="currentColor"><path d="M8.75.75V2h.985c.304 0 .603.08.867.231l1.29.736c.038.022.08.033.124.033h2.234a.75.75 0 0 1 0 1.5h-.427l2.111 4.692a.75.75 0 0 1-.154.838l-.53-.53.529.531-.001.002-.002.002-.006.006-.006.005-.01.01-.045.04c-.21.176-.441.327-.686.45C14.556 10.78 13.88 11 13 11a4.498 4.498 0 0 1-2.023-.454 3.544 3.544 0 0 1-.686-.45l-.045-.04-.016-.015-.006-.006-.004-.004v-.001a.75.75 0 0 1-.154-.838L12.178 4.5h-.162c-.305 0-.604-.079-.868-.231l-1.29-.736a.245.245 0 0 0-.124-.033H8.75V13h2.5a.75.75 0 0 1 0 1.5h-6.5a.75.75 0 0 1 0-1.5h2.5V3.5h-.984a.245.245 0 0 0-.124.033l-1.289.737c-.265.15-.564.23-.869.23h-.162l2.112 4.692a.75.75 0 0 1-.154.838l-.53-.53.529.531-.001.002-.002.002-.006.006-.016.015-.045.04c-.21.176-.441.327-.686.45C4.556 10.78 3.88 11 3 11a4.498 4.498 0 0 1-2.023-.454 3.544 3.544 0 0 1-.686-.45l-.045-.04-.016-.015-.006-.006-.004-.004v-.001a.75.75 0 0 1-.154-.838L2.178 4.5H1.75a.75.75 0 0 1 0-1.5h2.234a.249.249 0 0 0 .125-.033l1.288-.737c.265-.15.564-.23.869-.23h.984V.75a.75.75 0 0 1 1.5 0Zm2.945 8.477c.285.135.718.273 1.305.273s1.02-.138 1.305-.273L13 6.327Zm-10 0c.285.135.718.273 1.305.273s1.02-.138 1.305-.273L3 6.327Z"></path></symbol>
+    <symbol id="i-clock" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0ZM1.5 8a6.5 6.5 0 1 0 13 0 6.5 6.5 0 0 0-13 0Zm7-3.25v2.992l2.028.812a.75.75 0 0 1-.557 1.392l-2.5-1A.751.751 0 0 1 7 8.25v-3.5a.75.75 0 0 1 1.5 0Z"></path></symbol>
+    <symbol id="i-home" viewBox="0 0 16 16" fill="currentColor"><path d="M6.906.664a1.749 1.749 0 0 1 2.187 0l5.25 4.2c.415.332.657.835.657 1.367v7.019A1.75 1.75 0 0 1 13.25 15h-3.5a.75.75 0 0 1-.75-.75V9H7v5.25a.75.75 0 0 1-.75.75h-3.5A1.75 1.75 0 0 1 1 13.25V6.23c0-.531.242-1.034.657-1.366l5.25-4.2Zm1.25 1.171a.25.25 0 0 0-.312 0l-5.25 4.2a.25.25 0 0 0-.094.196v7.019c0 .138.112.25.25.25H5.5V8.25a.75.75 0 0 1 .75-.75h3.5a.75.75 0 0 1 .75.75v5.25h2.75a.25.25 0 0 0 .25-.25V6.23a.25.25 0 0 0-.094-.195Z"></path></symbol>
   </svg>
   <header class="topbar">
     <div class="container">

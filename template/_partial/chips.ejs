@@ -1,0 +1,7 @@
+<%# Filter chips. Items need a matching data-<key> attribute. %>
+<div class="chips" role="group" aria-label="<%= label %>" data-filter="<%= key %>">
+  <button class="chip" type="button" data-value="" aria-pressed="true">All <span class="n"><%= total.toLocaleString('en-US') %></span></button>
+  <% items.forEach(function(item) { %>
+  <button class="chip" type="button" data-value="<%= item.value %>" aria-pressed="false"><% if (item.color !== undefined) { %><span class="lang-dot"<% if (item.color) { %> style="background-color: <%= item.color %>"<% } %>></span><% } %><%= item.label %> <span class="n"><%= item.count.toLocaleString('en-US') %></span></button>
+  <% }); %>
+</div>

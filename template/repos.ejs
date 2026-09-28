@@ -14,16 +14,10 @@
 %>
 <%- include('./_partial/header', { tabCls: 'repos', title: 'Most Starred Repositories' }); %>
 <%- include('./_partial/toolbar', { tabs: [], placeholder: 'Search repository, language…' }); %>
-<ul class="cards">
-  <% REPOS.forEach(function(repo, idx) { %>
-  <%- include('./_partial/repo_card', {
-    repo,
-    idx,
-    color: LANG_COLORS[repo.language] || '',
-    forks: repo.forks_count,
-    today: '',
-    avatar: `${repo.owner.avatar_url}${repo.owner.avatar_url.includes('?') ? '&' : '?'}s=56`,
-  }); %>
-  <% }); %>
-</ul>
+<%- include('./_partial/repo_list', { repos: REPOS, cardOf: (repo) => ({
+  color: LANG_COLORS[repo.language] || '',
+  forks: repo.forks_count,
+  today: '',
+  avatar: `${repo.owner.avatar_url}${repo.owner.avatar_url.includes('?') ? '&' : '?'}s=56`,
+}) }); %>
 <%- include('./_partial/footer', {}); %>
