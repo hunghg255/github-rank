@@ -8,30 +8,48 @@ import { UsersDataBase, UsersData, RepoData } from '../common/props.js';
 
 dotenv.config();
 
-export async function getUserData(page: number, isVietnam?: boolean): Promise<UsersDataBase[]> {
+type SearchRoute = 'GET /search/users' | 'GET /search/repositories';
+
+/**
+ * Search API is limited to 30 requests/minute. When a request is rate limited,
+ * wait until the limit resets and retry instead of failing the whole build.
+ */
+export async function searchWithRetry(route: SearchRoute, params: Record<string, unknown>, retries = 3): Promise<any> {
   const headers: { authorization?: string; } = {};
   if (process.env.ACCESS_TOKEN) {
     headers.authorization = `token ${process.env.ACCESS_TOKEN}`
   }
-  try {
-    const dt = await request('GET /search/users', {
-      ...{ headers },
-      q: `followers:>100+type:User${isVietnam ? '+location:Vietnam' : ''}`,
-      page: page,
-      per_page: 100,
-    });
-    if (dt && dt.data && dt.data.items) {
-      console.log(`   Github API 获取用户计数: ${dt.headers['x-ratelimit-limit']}/\x1b[32;1m${dt.headers['x-ratelimit-remaining']}\x1b[0m`);
-      console.log('   时间:', `${formatter('YYYY年MM月DD日 HH:mm:ss', new Date(Number(`${dt.headers['x-ratelimit-reset']}000`)))}`);
-      return dt.data.items;
+  for (let attempt = 0; ; attempt++) {
+    try {
+      return await request(route as string, { headers, ...params });
+    } catch (error: any) {
+      const status = error?.status;
+      const resHeaders = error?.response?.headers || {};
+      const limited = status === 429 || (status === 403 && (resHeaders['x-ratelimit-remaining'] === '0' || resHeaders['retry-after'] || /rate limit/i.test(error?.message || '')));
+      if (!limited || attempt >= retries) {
+        throw error;
+      }
+      const reset = Number(resHeaders['x-ratelimit-reset']) * 1000;
+      const retryAfter = Number(resHeaders['retry-after']) * 1000;
+      const wait = Math.min(Math.max(retryAfter || (reset ? reset - Date.now() : 0), 0) + 2000, 90000);
+      console.log(`   Rate limited on ${route} (page ${params.page}), retrying in ${Math.round(wait / 1000)}s...`);
+      await sleep(wait);
     }
-    return [];
-  } catch (error) {
-    if (error instanceof Error) {
-      throw error.message || error;
-    }
-    return []
   }
+}
+
+export async function getUserData(page: number, isVietnam?: boolean): Promise<UsersDataBase[]> {
+  const dt = await searchWithRetry('GET /search/users', {
+    q: `followers:>100+type:User${isVietnam ? '+location:Vietnam' : ''}`,
+    page: page,
+    per_page: 100,
+  });
+  if (dt && dt.data && dt.data.items) {
+    console.log(`   Github API 获取用户计数: ${dt.headers['x-ratelimit-limit']}/\x1b[32;1m${dt.headers['x-ratelimit-remaining']}\x1b[0m`);
+    console.log('   时间:', `${formatter('YYYY年MM月DD日 HH:mm:ss', new Date(Number(`${dt.headers['x-ratelimit-reset']}000`)))}`);
+    return dt.data.items;
+  }
+  return [];
 }
 
 /**
@@ -68,29 +86,18 @@ export async function getUserInfoData(username: string, client_id?: string, clie
  * Get repositories data
  * @param page Page number
  */
-export async function getReposData(page: number): Promise<RepoData[] | undefined> {
-  const headers: { authorization?: string; } = {};
-  if (process.env.ACCESS_TOKEN) {
-    headers.authorization = `token ${process.env.ACCESS_TOKEN}`
+export async function getReposData(page: number): Promise<RepoData[]> {
+  const dt = await searchWithRetry('GET /search/repositories', {
+    q: 'stars:>8000',
+    page: page,
+    per_page: 100,
+  });
+  if (dt && dt.data && dt.data.items) {
+    console.log(`   Github API 获取仓库Star排行计数: ${dt.headers['x-ratelimit-limit']}/\x1b[32;1m${dt.headers['x-ratelimit-remaining']}\x1b[0m`);
+    console.log('   时间:', `${formatter('YYYY年MM月DD日 HH:mm:ss', new Date(Number(`${dt.headers['x-ratelimit-reset']}000`)))}`);
+    return dt.data.items;
   }
-  try {
-    const dt = await request(`GET /search/repositories`, {
-      ...{ headers },
-      q: 'stars:>8000',
-      page: page,
-      per_page: 100,
-    });
-    if (dt && dt.data && dt.data.items) {
-      console.log(`   Github API 获取仓库Star排行计数: ${dt.headers['x-ratelimit-limit']}/\x1b[32;1m${dt.headers['x-ratelimit-remaining']}\x1b[0m`);
-      console.log('   时间:', `${formatter('YYYY年MM月DD日 HH:mm:ss', new Date(Number(`${dt.headers['x-ratelimit-reset']}000`)))}`);
-      return dt.data.items;
-    }
-    throw '没有获取到用户信息';
-  } catch (error) {
-    if (error instanceof Error) {
-      throw error.message || error;
-    }
-  }
+  return [];
 }
 
 export interface ITrendingData {
