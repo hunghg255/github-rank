@@ -1,24 +1,4 @@
-<%- include('./_partial/header', { tabCls: 'users', type: 'vietnam', title: 'GitHub Vietnam User Ranking' }); %>
-<div class="userlist">
-  <%- include('./_partial/users_nav', { type: 'vietnam' }); %>
-<table>
-  <thead>
-    <tr>
-      <th title="avatar">ava</th>
-      <th>login</th>
-      <th>location</th>
-      <th>company</th>
-      <th>followers</th>
-      <th>following</th>
-      <th>repos</th>
-      <th>created at</th>
-    </tr>
-  </thead>
-  <tbody>
-    <% USERS_VIETNAM.forEach(function(user, idx) {%>
-    <%- include('./_partial/users_list', { user, idx }); %>
-    <% }); %>
-  </tbody>
-</table>
-</div>
-<%- include('./_partial/footer', { }); %>
+<%- include('./_partial/header', { tabCls: 'users', type: 'vietnam', title: 'Top GitHub Users in Vietnam' }); %>
+<%- include('./_partial/users_nav', { type: 'vietnam' }); %>
+<%- include('./_partial/users_table', { users: USERS_VIETNAM }); %>
+<%- include('./_partial/footer', {}); %>

@@ -1,20 +1,68 @@
-  <div class="footer">
-    <div>
-      <a href="https://github.com/hunghg255/github-rank/network" target="_blank">
-        <img src="https://img.shields.io/github/forks/hunghg255/github-rank.svg">
-      </a>
-      <a href="https://github.com/hunghg255/github-rank/stargazers" target="_blank">
-        <img src="https://img.shields.io/github/stars/hunghg255/github-rank.svg">
-      </a>
-      <a href="https://www.npmjs.com/package/@wcj/github-rank" target="_blank">
-        <img src="https://img.shields.io/npm/v/@wcj/github-rank.svg">
-      </a>
-      <a href="https://unpkg.com/@wcj/github-rank/web/index.html" target="_blank">
-        <img src="https://img.shields.io/npm/v/@wcj/github-rank.svg?label=unpkg">
-      </a>
+    <p class="empty" id="empty">No results match your search.</p>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <div>Made by <a href="https://github.com/hunghg255" target="_blank" rel="noopener">hunghg255</a> · Data from the GitHub API.</div>
+      <div class="footer-links">
+        <a href="https://github.com/hunghg255/github-rank" target="_blank" rel="noopener">Source</a>
+        <a href="https://github.com/hunghg255/github-rank/stargazers" target="_blank" rel="noopener">Star on GitHub</a>
+        <a href="https://github.com/hunghg255/github-rank/issues" target="_blank" rel="noopener">Report an issue</a>
+      </div>
     </div>
-    <div class="time">Last cache created on <%= `${new Date().getFullYear()}/${(new Date().getMonth()) + 1}/${new Date().getDate()}` %> by Github API v3.</div>
-    Create by <a href="https://github.com/hunghg255" target="_blank">hunghg255</a>.
-  </div>
+  </footer>
+
+  <button class="icon-btn to-top" type="button" aria-label="Back to top" title="Back to top">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M3.47 7.78a.75.75 0 0 1 0-1.06l4.25-4.25a.75.75 0 0 1 1.06 0l4.25 4.25a.751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018L9 4.81v7.44a.75.75 0 0 1-1.5 0V4.81L4.53 7.78a.75.75 0 0 1-1.06 0Z"></path></svg>
+  </button>
+
+  <script>
+    (function () {
+      var root = document.documentElement;
+
+      // Theme toggle: explicit choice is remembered, otherwise follow the OS.
+      var toggle = document.querySelector('.theme-toggle');
+      toggle && toggle.addEventListener('click', function () {
+        var current = root.getAttribute('data-theme') ||
+          (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        var next = current === 'dark' ? 'light' : 'dark';
+        root.setAttribute('data-theme', next);
+        try { localStorage.setItem('gr-theme', next); } catch (e) {}
+      });
+
+      // Client-side filter over items carrying data-search.
+      var input = document.getElementById('search');
+      var items = Array.prototype.slice.call(document.querySelectorAll('[data-search]'));
+      var count = document.getElementById('count');
+      var empty = document.getElementById('empty');
+      function render(visible) {
+        if (count) count.textContent = visible === items.length
+          ? items.length.toLocaleString() + ' items'
+          : visible.toLocaleString() + ' of ' + items.length.toLocaleString();
+        if (empty) empty.style.display = visible ? 'none' : 'block';
+      }
+      if (input) {
+        input.addEventListener('input', function () {
+          var q = input.value.trim().toLowerCase();
+          var visible = 0;
+          items.forEach(function (el) {
+            var match = !q || el.getAttribute('data-search').indexOf(q) !== -1;
+            el.hidden = !match;
+            if (match) visible++;
+          });
+          render(visible);
+        });
+      }
+      render(items.length);
+
+      var top = document.querySelector('.to-top');
+      if (top) {
+        window.addEventListener('scroll', function () {
+          top.classList.toggle('show', window.scrollY > 600);
+        }, { passive: true });
+        top.addEventListener('click', function () { window.scrollTo({ top: 0, behavior: 'smooth' }); });
+      }
+    })();
+  </script>
 </body>
 </html>

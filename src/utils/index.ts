@@ -152,7 +152,7 @@ export function getTrendingData(type: string = 'daily') {
 
         let forked = '-';
         node = $(item).find('svg[aria-label="fork"].octicon.octicon-repo-forked');
-        if (node) {
+        if (node && node[0]) {
           forked = node[0].next?.data?.replace(/(\n|\s|,)/g, '') || '';
         }
 

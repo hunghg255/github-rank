@@ -1,32 +1,31 @@
-<tr>
-  <td>
-    <a href="<%=user.html_url%>" target="_blank">
-      <img src="<%=user.avatar_url%>&s=60" width="30" height="30" loading="lazy" title="<%=user.name || user.login%>" alt="<%=user.name || user.login%>" />
+<%
+  const fmt = (n) => Number(n || 0).toLocaleString('en-US');
+  const displayName = user.name || user.login;
+  const joined = user.created_at ? new Date(user.created_at) : null;
+  const joinedText = joined ? `${joined.getFullYear()}/${String(joined.getMonth() + 1).padStart(2, '0')}/${String(joined.getDate()).padStart(2, '0')}` : '';
+  const search = [user.login, user.name, user.location, user.company].filter(Boolean).join(' ').toLowerCase();
+%>
+<li class="row" data-search="<%= search %>">
+  <div class="c-rank"><span class="rank rank-<%= idx + 1 %>"><%= idx + 1 %></span></div>
+  <div class="c-user user">
+    <a href="<%= user.html_url %>" target="_blank" rel="noopener" tabindex="-1">
+      <img class="avatar" src="<%= user.avatar_url %>&s=80" width="40" height="40" loading="lazy" alt="">
     </a>
-  </td>
-  <td>
-    <b><%=idx + 1%></b>
-    <a href="<%=user.html_url%>" target="_blank"><%=user.name || user.login%></a>
-    <span><%=user.login%></span>
-  </td>
-  <td><%=user.location%></td>
-  <td><%=user.company%></td>
-  <td>
-    <a href="<%=user.html_url%>?tab=followers" target="_blank">
-      <%=user.followers%>
-    </a>
-  </td>
-  <td>
-    <a href="<%=user.html_url%>?tab=following" target="_blank">
-      <%=user.following%>
-    </a>
-  </td>
-  <td>
-    <a href="<%=user.html_url%>?tab=repositories" target="_blank">
-      <%=user.public_repos%>
-    </a>
-  </td>
-  <td>
-    <%=user.created_at ? `${new Date(user.created_at).getFullYear()}/${new Date(user.created_at).getMonth() + 1}/${new Date(user.created_at).getDate()}` : '' %>
-  </td>
-</tr>
+    <div class="user-name">
+      <a href="<%= user.html_url %>" target="_blank" rel="noopener" title="<%= displayName %>"><%= displayName %></a>
+      <span>@<%= user.login %></span>
+    </div>
+  </div>
+  <div class="c-location cell-text" title="<%= user.location || '' %>"><%= user.location || '—' %></div>
+  <div class="c-company cell-text" title="<%= user.company || '' %>"><%= user.company || '—' %></div>
+  <div class="c-followers r-num"><a class="stat stat-strong num" href="<%= user.html_url %>?tab=followers" target="_blank" rel="noopener"><%= fmt(user.followers) %></a></div>
+  <div class="c-following r-num"><a class="stat num" href="<%= user.html_url %>?tab=following" target="_blank" rel="noopener"><%= fmt(user.following) %></a></div>
+  <div class="c-repos r-num"><a class="stat num" href="<%= user.html_url %>?tab=repositories" target="_blank" rel="noopener"><%= fmt(user.public_repos) %></a></div>
+  <div class="c-joined joined num"><%= joinedText %></div>
+  <div class="c-meta"><% if (user.location) { %><span><svg width="12" height="12" aria-hidden="true"><use href="#i-location"></use></svg><b><%= user.location %></b></span><% } %><% if (user.company) { %><span><svg width="12" height="12" aria-hidden="true"><use href="#i-company"></use></svg><b><%= user.company %></b></span><% } %></div>
+  <div class="c-stats">
+    <a class="num" href="<%= user.html_url %>?tab=followers" target="_blank" rel="noopener"><%= fmt(user.followers) %> <span>followers</span></a>
+    <a class="num" href="<%= user.html_url %>?tab=following" target="_blank" rel="noopener"><%= fmt(user.following) %> <span>following</span></a>
+    <a class="num" href="<%= user.html_url %>?tab=repositories" target="_blank" rel="noopener"><%= fmt(user.public_repos) %> <span>repos</span></a>
+  </div>
+</li>

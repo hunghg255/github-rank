@@ -1,8 +1,8 @@
-<%- include('./_partial/header', { tabCls: 'trending', title: 'GitHub Repositories Trending' }); %>
-<ul class="list repos trending">
-  <%- include('./_partial/trending_nav', { type: 'weekly' }); %>
-  <% TRENDING_WEEKLY.forEach(function(repo, idx){ %>
-    <%- include('./_partial/trending_list', { repo, idx }); %>
+<%- include('./_partial/header', { tabCls: 'trending', title: 'Trending Repositories' }); %>
+<%- include('./_partial/trending_nav', { type: 'weekly' }); %>
+<ul class="cards">
+  <% TRENDING_WEEKLY.forEach(function(repo, idx) { %>
+  <%- include('./_partial/trending_list', { repo, idx }); %>
   <% }); %>
 </ul>
-<%- include('./_partial/footer', { }); %>
+<%- include('./_partial/footer', {}); %>
