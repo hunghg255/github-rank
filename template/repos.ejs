@@ -1,35 +1,29 @@
-<%- include('./_partial/header', { tabCls: 'repos', title: 'GitHub Repositories Ranking' }); %>
-<ul class="list repos">
-  <% REPOS.forEach(function(repo, idx){ %>
-  <li>
-    <div class="avatar">
-      <a href="<%=repo.html_url%>" target="_blank">
-        <img src="<%=repo.owner.avatar_url%>&s=60" loading="lazy" title="<%=repo.full_name%>" alt="<%=repo.full_name%>" />
-      </a>
-    </div>
-    <div class="info">
-      <div class="rank">
-        <span title="Ranking <%=idx + 1%>"><%=idx + 1%></span>
-        <a href="<%=repo.html_url%>" target="_blank" title="<%=repo.full_name%>"><%=repo.full_name%></a>
-      </div>
-      <div class="sub-title followers">
-        <% if(repo.language) {%>
-        <a class="language" target="_blank" href="https://github.com/topics/<%=repo.language.toLowerCase()%>"  title="Programming Language <%=repo.language%>">
-          <%=repo.language%>
-        </a>
-        <% } %>
-        <span class="star" title="Stargazers Count">
-          <svg aria-label="star" viewBox="0 0 14 16" version="1.1" width="14" height="16" role="img">
-            <path fill-rule="evenodd" d="M14 6l-4.9-.64L7 1 4.9 5.36 0 6l3.6 3.26L2.67 14 7 11.67 11.33 14l-.93-4.74L14 6z"></path>
-          </svg>
-          <span><%=repo.stargazers_count%></span>
-        </span>
-      </div>
-      <div class="details">
-        <%=repo.description%>
-      </div>
-    </div>
-  </li>
+<%
+  // GitHub linguist colors for the most common languages (the search API does not return them).
+  const LANG_COLORS = {
+    JavaScript: '#f1e05a', TypeScript: '#3178c6', Python: '#3572A5', Java: '#b07219', Go: '#00ADD8',
+    'C++': '#f34b7d', C: '#555555', 'C#': '#178600', Rust: '#dea584', Ruby: '#701516', PHP: '#4F5D95',
+    Swift: '#F05138', Kotlin: '#A97BFF', Dart: '#00B4AB', Shell: '#89e051', HTML: '#e34c26', CSS: '#563d7c',
+    SCSS: '#c6538c', Vue: '#41b883', Svelte: '#ff3e00', 'Jupyter Notebook': '#DA5B0B', Markdown: '#083fa1',
+    'Objective-C': '#438eff', Scala: '#c22d40', Elixir: '#6e4a7e', Haskell: '#5e5086', Lua: '#000080',
+    Clojure: '#db5855', Perl: '#0298c3', R: '#198CE7', Zig: '#ec915c', Vim: '#199f4b', 'Vim Script': '#199f4b',
+    Dockerfile: '#384d54', MDX: '#fcb32c', 'Emacs Lisp': '#c065db', Julia: '#a270ba', Nix: '#7e7eff',
+    TeX: '#3D6117', Assembly: '#6E4C13', MATLAB: '#e16737', PowerShell: '#012456', Makefile: '#427819',
+    Astro: '#ff5a03', Solidity: '#AA6746', 'Classic ASP': '#6a40fd', Batchfile: '#C1F12E', OCaml: '#ef7a08',
+  };
+%>
+<%- include('./_partial/header', { tabCls: 'repos', title: 'Most Starred Repositories' }); %>
+<%- include('./_partial/toolbar', { tabs: [], placeholder: 'Search repository, language…' }); %>
+<ul class="cards">
+  <% REPOS.forEach(function(repo, idx) { %>
+  <%- include('./_partial/repo_card', {
+    repo,
+    idx,
+    color: LANG_COLORS[repo.language] || '',
+    forks: repo.forks_count,
+    today: '',
+    avatar: `${repo.owner.avatar_url}${repo.owner.avatar_url.includes('?') ? '&' : '?'}s=56`,
+  }); %>
   <% }); %>
 </ul>
-<%- include('./_partial/footer', { }); %>
+<%- include('./_partial/footer', {}); %>

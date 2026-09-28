@@ -1,4 +1,7 @@
-<span class="select">
-  <a class="<%= type === 'global' ? 'active': '' %>" href="index.html">Global</a>
-  <a class="<%= type === 'vietnam' ? 'active': '' %>" href="users.vietnam.html">Vietnam</a>
-</span>
+<%- include('./toolbar', {
+  placeholder: 'Search name, login, location, company…',
+  tabs: [
+    { label: 'Global', href: 'index.html', active: type === 'global' },
+    { label: 'Vietnam', href: 'users.vietnam.html', active: type === 'vietnam' },
+  ],
+}); %>

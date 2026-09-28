@@ -7,19 +7,28 @@ on:
       - v*
   schedule:
     - cron:  '0 0 * * 0'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: build-deploy
+  cancel-in-progress: false
 
 jobs:
   build-deploy:
     env:
-      ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+      # Fall back to the built-in token when the ACCESS_TOKEN secret is missing.
+      ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN || secrets.GITHUB_TOKEN }}
       ID: ${{ secrets.GITHUB_ID }}
       SECRET: ${{ secrets.GITHUB_SECRET }}
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: 18
+          node-version: 22
           registry-url: 'https://registry.npmjs.org'
 
       - run: npm install
@@ -42,7 +51,7 @@ jobs:
       - run: cp -rf dist/* web/data
 
       - name: Deploy
-        uses: peaceiris/actions-gh-pages@v3
+        uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./web

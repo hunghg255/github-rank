@@ -1,0 +1,41 @@
+<%
+  const fmt = (n) => {
+    const v = Number(String(n == null ? '' : n).replace(/[^\d.]/g, ''));
+    return Number.isFinite(v) && String(n).trim() !== '' ? v.toLocaleString('en-US') : '—';
+  };
+  const parts = String(repo.full_name || '').split('/');
+  const owner = parts[0] || '';
+  const name = parts.slice(1).join('/') || repo.full_name;
+  const search = [repo.full_name, repo.language, repo.description].filter(Boolean).join(' ').toLowerCase();
+%>
+<li class="card" data-search="<%= search %>">
+  <div class="card-head">
+    <span class="rank rank-<%= idx + 1 %>"><%= idx + 1 %></span>
+    <img class="avatar" src="<%= avatar %>" width="28" height="28" loading="lazy" alt="">
+    <a class="card-title" href="<%= repo.html_url %>" target="_blank" rel="noopener" title="<%= repo.full_name %>"><span><%= owner %> /</span> <b><%= name %></b></a>
+  </div>
+  <% if (repo.description) { %>
+  <p class="card-desc"><%= repo.description %></p>
+  <% } else { %>
+  <p class="card-desc none">No description provided.</p>
+  <% } %>
+  <div class="card-foot">
+    <% if (repo.language) { %>
+    <a href="https://github.com/topics/<%= encodeURIComponent(repo.language.toLowerCase()) %>" target="_blank" rel="noopener"><span class="lang-dot"<% if (color) { %> style="background-color: <%= color %>"<% } %>></span><%= repo.language %></a>
+    <% } %>
+    <a href="<%= repo.html_url %>/stargazers" target="_blank" rel="noopener" title="Stars">
+      <svg width="14" height="14" aria-hidden="true"><use href="#i-star"></use></svg>
+      <span class="num"><%= fmt(repo.stargazers_count) %></span>
+    </a>
+    <a href="<%= repo.html_url %>/forks" target="_blank" rel="noopener" title="Forks">
+      <svg width="14" height="14" aria-hidden="true"><use href="#i-fork"></use></svg>
+      <span class="num"><%= fmt(forks) %></span>
+    </a>
+    <% if (today) { %>
+    <span class="today num" title="<%= today %>">
+      <svg width="12" height="12" aria-hidden="true"><use href="#i-up"></use></svg>
+      <%= today.replace(/\s*stars?\s*/i, ' ').trim() %>
+    </span>
+    <% } %>
+  </div>
+</li>

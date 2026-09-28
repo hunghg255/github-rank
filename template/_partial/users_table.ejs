@@ -1,0 +1,15 @@
+<ol class="table">
+  <li class="row row-head" aria-hidden="true">
+    <div>#</div>
+    <div>User</div>
+    <div class="c-location">Location</div>
+    <div class="c-company">Company</div>
+    <div class="c-followers r-num">Followers</div>
+    <div class="c-following r-num">Following</div>
+    <div class="c-repos r-num">Repos</div>
+    <div class="c-joined joined">Joined</div>
+  </li>
+  <% users.forEach(function(user, idx) { %>
+  <%- include('./users_list', { user, idx }); %>
+  <% }); %>
+</ol>
